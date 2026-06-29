@@ -8,7 +8,7 @@ namespace Api.Controllers;
 
 
 
-// [Authorize]
+[Authorize]
 [ServiceFilter(typeof(OnActionExecutionMiddleware))]
 [ApiController]
 [Route("api/v1/[controller]")]

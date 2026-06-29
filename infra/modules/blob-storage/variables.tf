@@ -13,14 +13,8 @@ variable "resource_group_name" {
   type        = string
 }
 
-variable "cors_allowed_origins" {
-  description = "Origins allowed to call the Function App directly (e.g. the Angular dev server)"
-  type        = list(string)
-  default     = []
-}
-
-variable "node_version" {
-  description = "Node.js major version for the Functions runtime"
+variable "container_name" {
+  description = "Name of the blob container that stores images"
   type        = string
-  default     = "24"
+  default     = "images"
 }

@@ -1,9 +1,14 @@
+using System.Text.Json;
+using System.Threading.RateLimiting;
 using Api.Data;
 using Api.Interfaces;
 using Api.Middleware;
 using Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
 
 
 
@@ -31,6 +36,39 @@ public static class AppServiceExtensions
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<ISightService, SightService>();
+        services.AddSingleton<IBlobService, BlobService>();
+        services.AddScoped<IUserService, UserService>();
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddMicrosoftIdentityWebApi(configuration.GetSection("AzureAd"));
+        services.AddAuthorization();
+
+        services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        Window = TimeSpan.FromMinutes(1),
+                        PermitLimit = 100,
+                        QueueLimit = 0
+                    }));
+
+            options.OnRejected = async (context, token) =>
+            {
+                context.HttpContext.Response.ContentType = "application/json";
+                await context.HttpContext.Response.WriteAsync(
+                    JsonSerializer.Serialize(new
+                    {
+                        error = "Too many requests. Please try again later.",
+                        statusCode = StatusCodes.Status429TooManyRequests
+                    }),
+                    token);
+            };
+        });
 
         return services;
     }

@@ -29,6 +29,8 @@ public static class AppServiceExtensions
                 sql => sql.UseNetTopologySuite()));
 
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<ITagService, TagService>();
+        services.AddScoped<ISightService, SightService>();
 
         return services;
     }

@@ -4,6 +4,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 
@@ -12,9 +13,11 @@ using NetTopologySuite.Geometries;
 namespace Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260629110602_AddTags")]
+    partial class AddTags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,34 +101,6 @@ namespace Api.Migrations
                     b.ToTable("sights", (string)null);
                 });
 
-            modelBuilder.Entity("Api.Models.SightImage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)")
-                        .HasColumnName("image_url");
-
-                    b.Property<Guid>("SightId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("sight_id");
-
-                    b.Property<int>("SortOrder")
-                        .HasColumnType("int")
-                        .HasColumnName("sort_order");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SightId");
-
-                    b.ToTable("sight_images", (string)null);
-                });
-
             modelBuilder.Entity("Api.Models.SightTag", b =>
                 {
                     b.Property<Guid>("SightId")
@@ -175,17 +150,6 @@ namespace Api.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Api.Models.SightImage", b =>
-                {
-                    b.HasOne("Api.Models.Sight", "Sight")
-                        .WithMany("Images")
-                        .HasForeignKey("SightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Sight");
-                });
-
             modelBuilder.Entity("Api.Models.SightTag", b =>
                 {
                     b.HasOne("Api.Models.Sight", null)
@@ -199,11 +163,6 @@ namespace Api.Migrations
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Api.Models.Sight", b =>
-                {
-                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

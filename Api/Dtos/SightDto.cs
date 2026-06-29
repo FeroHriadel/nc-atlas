@@ -19,8 +19,11 @@ public class SightDto
     public int RatingCount { get; set; }
     public required string Source { get; set; }
     public DateTime CreatedAt { get; set; }
+    public List<TagDto> Tags { get; set; } = [];
+    public List<SightImageDto> Images { get; set; } = [];
 
-    // Caller must .Include(s => s.Category) — CategoryName reads the navigation property.
+    // Caller must .Include(s => s.Category), .Include(s => s.Tags) and .Include(s => s.Images) —
+    // CategoryName, Tags and Images read the navigation properties.
     public static SightDto FromEntity(Sight sight) => new()
     {
         Id = sight.Id,
@@ -33,6 +36,8 @@ public class SightDto
         RatingAvg = sight.RatingAvg,
         RatingCount = sight.RatingCount,
         Source = sight.Source,
-        CreatedAt = sight.CreatedAt
+        CreatedAt = sight.CreatedAt,
+        Tags = sight.Tags.Select(TagDto.FromEntity).ToList(),
+        Images = sight.Images.OrderBy(i => i.SortOrder).Select(SightImageDto.FromEntity).ToList()
     };
 }

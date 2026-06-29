@@ -59,5 +59,24 @@ public class SightConfiguration : IEntityTypeConfiguration<Sight>
 
         // Spatial index on `location` is added via raw SQL in the migration —
         // EF Core's Fluent API has no native support for SQL Server spatial indexes.
+
+        builder.HasMany(s => s.Tags)
+            .WithMany(t => t.Sights)
+            .UsingEntity<SightTag>(
+                j => j
+                    .HasOne<Tag>()
+                    .WithMany()
+                    .HasForeignKey(st => st.TagId),
+                j => j
+                    .HasOne<Sight>()
+                    .WithMany()
+                    .HasForeignKey(st => st.SightId),
+                j =>
+                {
+                    j.ToTable("sight_tags");
+                    j.HasKey(st => new { st.SightId, st.TagId });
+                    j.Property(st => st.SightId).HasColumnName("sight_id");
+                    j.Property(st => st.TagId).HasColumnName("tag_id");
+                });
     }
 }

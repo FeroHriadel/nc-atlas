@@ -18,4 +18,6 @@ public class Sight
     public int RatingCount { get; set; }
     public required string Source { get; set; }
     public DateTime CreatedAt { get; set; }
+    public List<Tag> Tags { get; set; } = [];
+    public List<SightImage> Images { get; set; } = [];
 }

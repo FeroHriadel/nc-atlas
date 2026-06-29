@@ -1,0 +1,15 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+local.settings.json
+node_modules/
+.env
+
+# .NET (api/)
+bin/
+obj/
+*.user
+*.suo
+.vs/

@@ -1,5 +1,7 @@
 using Api.Dtos;
 using Api.Interfaces;
+using Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -12,6 +14,7 @@ public class CategoriesController(ICategoryService categoryService) : BaseAppCon
 {
 
     // GET: api/v1/categories
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<List<CategoryDto>>> GetCategories()
     {
@@ -20,6 +23,7 @@ public class CategoriesController(ICategoryService categoryService) : BaseAppCon
 
 
     // GET: api/v1/categories/{id}
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<CategoryDto>> GetCategory(int id)
     {
@@ -27,6 +31,7 @@ public class CategoriesController(ICategoryService categoryService) : BaseAppCon
     }
 
     // POST: api/v1/categories
+    [Authorize(Roles = Roles.Admin)]
     [HttpPost]
     public async Task<ActionResult<CategoryDto>> CreateCategory(CategoryRequestDto request)
     {
@@ -36,6 +41,7 @@ public class CategoriesController(ICategoryService categoryService) : BaseAppCon
 
 
     // PUT: api/v1/categories/{id}
+    [Authorize(Roles = Roles.Admin)]
     [HttpPut("{id:int}")]
     public async Task<ActionResult<CategoryDto>> UpdateCategory(int id, CategoryRequestDto request)
     {
@@ -44,6 +50,7 @@ public class CategoriesController(ICategoryService categoryService) : BaseAppCon
 
 
     // DELETE: api/v1/categories/{id}
+    [Authorize(Roles = Roles.Admin)]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCategory(int id)
     {

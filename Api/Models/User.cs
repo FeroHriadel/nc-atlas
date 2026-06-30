@@ -10,5 +10,6 @@ public class User
     public required string Email { get; set; }
     public string? ProfileImageUrl { get; set; }
     public string? Bio { get; set; }
+    public string Role { get; set; } = Roles.User;
     public DateTime CreatedAt { get; set; }
 }

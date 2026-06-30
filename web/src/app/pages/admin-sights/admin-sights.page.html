@@ -1,0 +1,26 @@
+<h1 class="page-title">ADMIN SIGHTS</h1>
+<h2 class="page-subtitle mb-12">Manage all sights</h2>
+
+<nc-card class="p-4 mb-6">
+  <h3 class="section-title-light">Upload new sights</h3>
+  <p class="section-subtitle-light mb-6">Upload a JSON containing sights and add them to the system.</p>
+  
+  <div class="flex gap-2 align-end mb-6">
+    <span>
+        <label for="json-upload" class="mb-1">Upload JSON</label>
+        <nc-file-upload type="file" width="260px" id="json-upload" name="json-upload" accept=".json" [onChange]="onJsonUpload">
+        </nc-file-upload>
+    </span>
+    @if (sights().length > 0) {
+        <nc-button variant="dark">Upload</nc-button>
+        <nc-button variant="red">Clear</nc-button>
+    }
+  </div>
+
+  @for (sight of sights(); track sight.title) {
+    <nc-card class="p-4 mb-6">
+        <h3 class="section-title-light">{{ sight.title }}</h3>
+        <p class="text">{{ sight.description }}</p>
+    </nc-card>
+    }
+</nc-card>

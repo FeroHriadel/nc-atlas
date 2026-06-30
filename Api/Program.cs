@@ -14,7 +14,6 @@ app.UseRateLimiter();
 if (app.Environment.IsDevelopment()) app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<UserProvisioningMiddleware>();
 app.MapControllers();
 app.Run();
 

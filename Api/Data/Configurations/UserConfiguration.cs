@@ -45,6 +45,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("bio")
             .HasColumnType("nvarchar(max)");
 
+        builder.Property(u => u.Role)
+            .HasColumnName("role")
+            .HasMaxLength(20)
+            .HasDefaultValue(Roles.User)
+            .IsRequired();
+
         builder.Property(u => u.CreatedAt)
             .HasColumnName("created_at")
             .HasColumnType("datetime2");

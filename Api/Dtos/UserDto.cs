@@ -13,6 +13,7 @@ public class UserDto
     public required string Email { get; set; }
     public string? ProfileImageUrl { get; set; }
     public string? Bio { get; set; }
+    public required string Role { get; set; }
     public DateTime CreatedAt { get; set; }
 
     public static UserDto FromEntity(User user) => new()
@@ -22,6 +23,7 @@ public class UserDto
         Email = user.Email,
         ProfileImageUrl = user.ProfileImageUrl,
         Bio = user.Bio,
+        Role = user.Role,
         CreatedAt = user.CreatedAt
     };
 }

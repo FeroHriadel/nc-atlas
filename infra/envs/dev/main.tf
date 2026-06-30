@@ -15,7 +15,7 @@ module "aad_auth" {
   source = "../../modules/aad-auth"
 
   name_prefix       = "ncatlas-dev"
-  spa_redirect_uris = ["http://localhost:4200/auth-callback"]
+  spa_redirect_uris = ["http://localhost:4200/"]
 }
 
 # Front Door (Standard SKU, ~$35/mo minimum) intentionally not built yet —

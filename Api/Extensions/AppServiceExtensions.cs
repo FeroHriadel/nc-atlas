@@ -1,9 +1,11 @@
 using System.Text.Json;
 using System.Threading.RateLimiting;
+using Api.Auth;
 using Api.Data;
 using Api.Interfaces;
 using Api.Middleware;
 using Api.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -42,6 +44,7 @@ public static class AppServiceExtensions
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(configuration.GetSection("AzureAd"));
         services.AddAuthorization();
+        services.AddTransient<IClaimsTransformation, RoleClaimsTransformation>();
 
         services.AddRateLimiter(options =>
         {

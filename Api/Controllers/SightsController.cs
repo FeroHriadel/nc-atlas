@@ -1,6 +1,8 @@
 using Api.Dtos;
 using Api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Api.Models;
+using Microsoft.AspNetCore.Authorization;
 
 
 
@@ -22,6 +24,7 @@ public class SightsController(ISightService sightService) : BaseAppController
         return await sightService.GetSightAsync(id);
     }
 
+    [Authorize(Roles = Roles.Admin)]
     [HttpPost]
     public async Task<ActionResult<SightDto>> CreateSight(SightRequestDto request)
     {
@@ -29,12 +32,14 @@ public class SightsController(ISightService sightService) : BaseAppController
         return CreatedAtAction(nameof(GetSight), new { id = sight.Id }, sight);
     }
 
+    [Authorize(Roles = Roles.Admin)]
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<SightDto>> UpdateSight(Guid id, SightRequestDto request)
     {
         return await sightService.UpdateSightAsync(id, request);
     }
 
+    [Authorize(Roles = Roles.Admin)]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteSight(Guid id)
     {

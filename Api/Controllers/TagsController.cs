@@ -1,6 +1,8 @@
 using Api.Dtos;
 using Api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Api.Models;
 
 
 
@@ -10,18 +12,21 @@ namespace Api.Controllers;
 
 public class TagsController(ITagService tagService) : BaseAppController
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<List<TagDto>>> GetTags()
     {
         return await tagService.GetTagsAsync();
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<TagDto>> GetTag(Guid id)
     {
         return await tagService.GetTagAsync(id);
     }
 
+    [Authorize(Roles = Roles.Admin)]
     [HttpPost]
     public async Task<ActionResult<TagDto>> CreateTag(TagRequestDto request)
     {
@@ -29,12 +34,14 @@ public class TagsController(ITagService tagService) : BaseAppController
         return CreatedAtAction(nameof(GetTag), new { id = tag.Id }, tag);
     }
 
+    [Authorize(Roles = Roles.Admin)]
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<TagDto>> UpdateTag(Guid id, TagRequestDto request)
     {
         return await tagService.UpdateTagAsync(id, request.Name);
     }
 
+    [Authorize(Roles = Roles.Admin)]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteTag(Guid id)
     {

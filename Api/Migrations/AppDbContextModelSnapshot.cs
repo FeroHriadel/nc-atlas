@@ -194,6 +194,14 @@ namespace Api.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("profile_image_url");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("User")
+                        .HasColumnName("role");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)

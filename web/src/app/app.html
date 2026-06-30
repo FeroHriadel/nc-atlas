@@ -1,0 +1,19 @@
+
+<nc-topnav [links]="getNavLinks()">
+    <span slot="logo" [routerLink]="['/']">
+        <app-logo></app-logo>
+    </span>
+    <span slot="custom">
+        @if (auth.currentUser(); as user) {
+            <nc-button variant="outline" size="small" class="mr-2" [onClick]="logout.bind(this)">Logout</nc-button>
+        } @else {
+            <nc-button variant="dark" size="small" class="mr-2" [onClick]="login.bind(this)">Login</nc-button>
+        }
+    </span>
+</nc-topnav>
+
+<br><br><br><br>
+
+<nc-container [style]="{maxWidth: '1200px'}">
+    <router-outlet></router-outlet>
+</nc-container>

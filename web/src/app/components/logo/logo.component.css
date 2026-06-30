@@ -1,0 +1,4 @@
+.logo {
+    width: 50px;
+    filter: grayscale(100%) contrast(1.2);
+}

@@ -1,10 +1,12 @@
 using System.Text.Json;
+using System.Threading.Channels;
 using System.Threading.RateLimiting;
 using Api.Auth;
 using Api.Data;
 using Api.Interfaces;
 using Api.Middleware;
 using Api.Services;
+using Api.Workers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +42,9 @@ public static class AppServiceExtensions
         services.AddScoped<ISightService, SightService>();
         services.AddSingleton<IBlobService, BlobService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddSingleton(Channel.CreateUnbounded<ImportPayload>());
+        services.AddScoped<IImportService, ImportService>();
+        services.AddHostedService<ImportBackgroundWorker>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(configuration.GetSection("AzureAd"));

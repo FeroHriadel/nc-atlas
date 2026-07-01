@@ -4,6 +4,7 @@ using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 
@@ -12,9 +13,11 @@ using NetTopologySuite.Geometries;
 namespace Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260701110907_AddImportJobs")]
+    partial class AddImportJobs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,30 +106,13 @@ namespace Api.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
 
-                    b.Property<string>("CategoryName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("category_name");
-
                     b.Property<string>("ErrorMessage")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("error_message");
 
-                    b.Property<string>("Image350Url")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("image_350_url");
-
                     b.Property<Guid>("JobId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("job_id");
-
-                    b.Property<double?>("Latitude")
-                        .HasColumnType("float")
-                        .HasColumnName("latitude");
-
-                    b.Property<double?>("Longitude")
-                        .HasColumnType("float")
-                        .HasColumnName("longitude");
 
                     b.Property<string>("SightDescription")
                         .HasColumnType("nvarchar(max)")
@@ -147,11 +133,6 @@ namespace Api.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("status");
-
-                    b.Property<string>("Tags")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)")
-                        .HasColumnName("tags");
 
                     b.HasKey("Id");
 

@@ -11,7 +11,7 @@ namespace Api.Services;
 
 
 
-public class SightService(AppDbContext db) : ISightService
+public class SightService(AppDbContext db, IBlobService blobService) : ISightService
 {
     public async Task<SightDto> CreateSightAsync(SightRequestDto request)
     {
@@ -79,8 +79,13 @@ public class SightService(AppDbContext db) : ISightService
 
     public async Task DeleteSightAsync(Guid id)
     {
-        var sight = await db.Sights.FindAsync(id)
+        var sight = await db.Sights
+            .Include(s => s.Images)
+            .FirstOrDefaultAsync(s => s.Id == id)
             ?? throw new ErrorRes("Sight not found", StatusCodes.Status404NotFound);
+
+        foreach (var image in sight.Images)
+            await blobService.DeleteAsync(image.ImageUrl);
 
         db.Sights.Remove(sight);
         await db.SaveChangesAsync();

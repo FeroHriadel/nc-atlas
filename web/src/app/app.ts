@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { InteractionStatus } from '@azure/msal-browser';
@@ -26,26 +26,33 @@ export class App implements OnInit {
   private broadcast = inject(MsalBroadcastService);
   auth = inject(AuthService);
 
-  private allNavLinks: NavLink[] = [
-    {
-      label: 'Admin',
-      hasOptions: true,
-      options: [
-        {label: 'Dahsboard', value: '/admin/dashboard'},
-        {label: 'Categories', value: '/admin/categories'},
-        {label: 'Tags', value: '/admin/tags'},
-        {label: 'Sights', value: '/admin/sights'},
-        {label: 'Users', value: '/admin/users'},
-      ]
-    },
+  private publicNavLinks: NavLink[] = [
+    { label: 'Sights', link: '/sights' },
+    { label: 'Trip Planner', link: '/trip-planner' },
   ];
 
-  private publicNavLinks: NavLink[] = [
-    {
-      label: 'Sights',
-      link: '/sights'
-    },
-  ];
+  navLinks = computed<NavLink[]>(() => {
+    const user = this.auth.currentUser();
+    if (!user) return this.publicNavLinks;
+    const links: NavLink[] = [
+      ...this.publicNavLinks,
+      { label: 'My Account', link: '/myaccount' },
+    ];
+    if (this.auth.isAdmin()) {
+      links.push({
+        label: 'Admin',
+        hasOptions: true,
+        options: [
+          { label: 'Dashboard', value: '/admin/dashboard' },
+          { label: 'Categories', value: '/admin/categories' },
+          { label: 'Tags', value: '/admin/tags' },
+          { label: 'Sights', value: '/admin/sights' },
+          { label: 'Users', value: '/admin/users' },
+        ],
+      });
+    }
+    return links;
+  });
 
   ngOnInit(): void {
     // Wait for MSAL to finish processing any redirect/popup before reading account state
@@ -58,10 +65,6 @@ export class App implements OnInit {
         }
         this.auth.loadCurrentUser().subscribe();
       });
-  }
-
-  getNavLinks(): NavLink[] {
-    return this.auth.isAdmin() ? this.allNavLinks : this.publicNavLinks;
   }
 
   login(): void {

@@ -1,5 +1,6 @@
 using Api.Interfaces;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 
 
@@ -39,5 +40,19 @@ public class BlobService : IBlobService
         var uploadUrl = blobClient.GenerateSasUri(sasBuilder).ToString();
 
         return (uploadUrl, blobClient.Uri.ToString());
+    }
+
+    public async Task<string> UploadAsync(Stream stream, string blobName, string contentType)
+    {
+        var blobClient = containerClient.GetBlobClient(blobName);
+        await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType });
+        return blobClient.Uri.ToString();
+    }
+
+    public async Task DeleteAsync(string blobUrl)
+    {
+        // BlobUriBuilder parses the full URL and gives us the blob name (path within the container)
+        var blobName = new BlobUriBuilder(new Uri(blobUrl)).BlobName;
+        await containerClient.GetBlobClient(blobName).DeleteIfExistsAsync();
     }
 }

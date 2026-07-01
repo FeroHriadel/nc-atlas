@@ -1,0 +1,78 @@
+.stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.stats-text {
+  font-size: 14px;
+  color: var(--nc-text);
+}
+
+.stat-succeeded { color: var(--nc-success, #4caf50); }
+.stat-failed    { color: var(--nc-error,   #f44336); }
+
+.stats-skipped {
+  font-size: 13px;
+  color: var(--nc-text-muted, #888);
+}
+
+.stats-status {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.status-pending    { background: var(--nc-warning-bg, #fff3cd); color: var(--nc-warning, #856404); }
+.status-processing { background: var(--nc-info-bg,    #cfe2ff); color: var(--nc-info,    #084298); }
+.status-completed  { background: var(--nc-success-bg, #d1e7dd); color: var(--nc-success, #0f5132); }
+.status-aborted    { background: var(--nc-error-bg,   #f8d7da); color: var(--nc-error,   #842029); }
+
+.sight-card {
+  display: flex;
+  gap: 16px;
+}
+
+.sight-thumb {
+  width: 140px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--nc-border-radius, 4px);
+  flex-shrink: 0;
+}
+
+.sight-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sight-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.meta-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--nc-text-muted, #888);
+}
+
+.meta-coords {
+  font-size: 12px;
+  font-family: monospace;
+  color: var(--nc-text-muted, #888);
+}
+
+.sight-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}

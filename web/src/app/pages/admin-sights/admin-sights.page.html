@@ -1,26 +1,88 @@
 <h1 class="page-title">ADMIN SIGHTS</h1>
-<h2 class="page-subtitle mb-12">Manage all sights</h2>
+<h2 class="page-subtitle mb-12">Manage sights</h2>
 
 <nc-card class="p-4 mb-6">
-  <h3 class="section-title-light">Upload new sights</h3>
-  <p class="section-subtitle-light mb-6">Upload a JSON containing sights and add them to the system.</p>
-  
+  <h3 class="section-title-light">Upload sights from Atlas Extract</h3>
+  <p class="section-subtitle-light mb-6">Upload a .zip file exported by the Atlas Extract app.</p>
+
   <div class="flex gap-2 align-end mb-6">
     <span>
-        <label for="json-upload" class="mb-1">Upload JSON</label>
-        <nc-file-upload type="file" width="260px" id="json-upload" name="json-upload" accept=".json" [onChange]="onJsonUpload">
-        </nc-file-upload>
+      <label class="mb-1">Atlas Extract zip</label>
+      <nc-file-upload
+        #zipUploadRef
+        accept=".zip"
+        width="260px"
+        id="zip-upload"
+        [disabled]="isActive() || isUploading()"
+        [onChange]="onFileChange">
+      </nc-file-upload>
     </span>
-    @if (sights().length > 0) {
-        <nc-button variant="dark">Upload</nc-button>
-        <nc-button variant="red">Clear</nc-button>
+
+    @if (selectedFile()) {
+      <nc-button
+        variant="dark"
+        [disabled]="!canUpload()"
+        [onClick]="onUpload">
+        {{ isUploading() ? 'Uploading...' : 'Upload' }}
+      </nc-button>
+    }
+
+    @if (isActive()) {
+      <nc-button variant="red" [onClick]="onAbort">Abort</nc-button>
+    }
+
+    @if (showAcknowledge()) {
+      <nc-button variant="outline" [onClick]="onAcknowledge">Acknowledge</nc-button>
     }
   </div>
 
-  @for (sight of sights(); track sight.title) {
-    <nc-card class="p-4 mb-6">
-        <h3 class="section-title-light">{{ sight.title }}</h3>
-        <p class="text">{{ sight.description }}</p>
-    </nc-card>
+  @if (job()) {
+    <div class="stats-bar mb-6">
+      <span class="stats-text">
+        Processed {{ job()!.processedCount }} / {{ job()!.totalCount }}
+        &nbsp;&mdash;&nbsp;
+        <span class="stat-succeeded">{{ job()!.succeededCount }} succeeded</span>,
+        <span class="stat-failed">{{ job()!.failedCount }} failed</span>,
+        {{ remainingCount() }} remaining
+      </span>
+      @if (job()!.skippedCount > 0) {
+        <span class="stats-skipped">{{ job()!.skippedCount }} skipped (already in DB)</span>
+      }
+      <span class="stats-status" [class]="'status-' + job()!.status.toLowerCase()">
+        {{ job()!.status }}
+      </span>
+    </div>
+
+    @for (item of succeededItems(); track item.id) {
+      <nc-card class="p-4 mb-4">
+        <div class="sight-card">
+          @if (item.image350Url) {
+            <img class="sight-thumb" [src]="item.image350Url" [alt]="item.sightTitle" />
+          }
+          <div class="sight-info">
+            <div class="flex justify-between align-start gap-4">
+              <h3 class="section-title-light">{{ item.sightTitle }}</h3>
+              <nc-button variant="red" size="small" [onClick]="() => onDelete(item.sightId!)">Delete</nc-button>
+            </div>
+            <p class="text mb-2">{{ item.sightDescription }}</p>
+            <div class="sight-meta">
+              @if (item.categoryName) {
+                <span class="meta-label">{{ item.categoryName }}</span>
+              }
+              @if (item.latitude != null && item.longitude != null) {
+                <span class="meta-coords">{{ item.latitude | number:'1.4-4' }}, {{ item.longitude | number:'1.4-4' }}</span>
+              }
+            </div>
+            @if (item.tags) {
+              <div class="sight-tags mt-2">
+                @for (tag of item.tags.split(', '); track tag) {
+                  <nc-pill size="small">{{ tag }}</nc-pill>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </nc-card>
     }
+  }
 </nc-card>

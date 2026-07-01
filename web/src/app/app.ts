@@ -43,11 +43,11 @@ export class App implements OnInit {
         label: 'Admin',
         hasOptions: true,
         options: [
-          { label: 'Dashboard', value: '/admin/dashboard' },
-          { label: 'Categories', value: '/admin/categories' },
-          { label: 'Tags', value: '/admin/tags' },
-          { label: 'Sights', value: '/admin/sights' },
-          { label: 'Users', value: '/admin/users' },
+          { label: 'Admin Dashboard', value: '/admin/dashboard' },
+          { label: 'Admin Categories', value: '/admin/categories' },
+          { label: 'Admin Tags', value: '/admin/tags' },
+          { label: 'Admin Sights Upload', value: '/admin/sights' },
+          { label: 'Admin Users', value: '/admin/users' },
         ],
       });
     }

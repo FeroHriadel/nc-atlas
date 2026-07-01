@@ -10,7 +10,7 @@ namespace Api.Controllers;
 
 
 
-public class SightsController(ISightService sightService) : BaseAppController
+public class SightsController(ISightService sightService, IWebHostEnvironment env) : BaseAppController
 {
     [HttpGet]
     public async Task<ActionResult<List<SightDto>>> GetSights()
@@ -44,6 +44,17 @@ public class SightsController(ISightService sightService) : BaseAppController
     public async Task<IActionResult> DeleteSight(Guid id)
     {
         await sightService.DeleteSightAsync(id);
+        return NoContent();
+    }
+
+    [Authorize(Roles = Roles.Admin)]
+    [HttpDelete("all")]
+    public async Task<IActionResult> DeleteAllSights()
+    {
+        if (!env.IsDevelopment())
+            throw new ErrorRes("Not available outside development", StatusCodes.Status403Forbidden);
+
+        await sightService.DeleteAllSightsAsync();
         return NoContent();
     }
 }

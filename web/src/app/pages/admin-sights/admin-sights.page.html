@@ -1,5 +1,13 @@
-<h1 class="page-title">ADMIN SIGHTS</h1>
-<h2 class="page-subtitle mb-12">Manage sights</h2>
+<h1 class="page-title">ADMIN SIGHTS UPLOAD</h1>
+<h2 class="page-subtitle mb-12">Upload sights from Atlas Extract</h2>
+
+@if (isDev) {
+  <nc-card class="p-4 mb-6">
+    <h3 class="section-title-light">Clear Sights (Development only)</h3>
+    <p class="section-subtitle-light mb-6">Deletes all sights from the database and all images from BlobStorage.</p>
+    <nc-button variant="red" [onClick]="onClearAllSights">Clear Sights</nc-button>
+  </nc-card>
+}
 
 <nc-card class="p-4 mb-6">
   <h3 class="section-title-light">Upload sights from Atlas Extract</h3>
@@ -55,17 +63,17 @@
 
     @for (item of succeededItems(); track item.id) {
       <nc-card class="p-4 mb-4">
-        <div class="sight-card">
+        <div class="sight-card w-100">
           @if (item.image350Url) {
             <img class="sight-thumb" [src]="item.image350Url" [alt]="item.sightTitle" />
           }
-          <div class="sight-info">
-            <div class="flex justify-between align-start gap-4">
+          <div class="sight-info w-100">
+            <div class="flex w-100 align-center mb-4" [style]="{justifyContent: 'space-between'}">
               <h3 class="section-title-light">{{ item.sightTitle }}</h3>
-              <nc-button variant="red" size="small" [onClick]="() => onDelete(item.sightId!)">Delete</nc-button>
+              <nc-button variant="red" size="small" [style]="{marginLeft: 'aut'}" [onClick]="() => onDelete(item.sightId!)">Delete</nc-button>
             </div>
-            <p class="text mb-2">{{ item.sightDescription }}</p>
-            <div class="sight-meta">
+            <p class="text mb-2 text-left mb-4">{{ item.sightDescription }}</p>
+            <div class="sight-meta flex justify-between align-center mb-4">
               @if (item.categoryName) {
                 <span class="meta-label">{{ item.categoryName }}</span>
               }
@@ -86,3 +94,4 @@
     }
   }
 </nc-card>
+

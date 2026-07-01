@@ -91,6 +91,18 @@ public class SightService(AppDbContext db, IBlobService blobService) : ISightSer
         await db.SaveChangesAsync();
     }
 
+    public async Task DeleteAllSightsAsync()
+    {
+        var sights = await db.Sights.Include(s => s.Images).ToListAsync();
+
+        foreach (var sight in sights)
+            foreach (var image in sight.Images)
+                await blobService.DeleteAsync(image.ImageUrl);
+
+        db.Sights.RemoveRange(sights);
+        await db.SaveChangesAsync();
+    }
+
     private async Task<Sight> FindSightAsync(Guid id)
     {
         return await db.Sights

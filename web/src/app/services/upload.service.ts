@@ -38,4 +38,8 @@ export class UploadService {
   deleteAllJobs(): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/import`);
   }
+
+  clearAllSights(): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/sights/all`);
+  }
 }

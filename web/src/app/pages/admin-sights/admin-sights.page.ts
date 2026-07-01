@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, computed, inject, isDevMode, signal } from '@angular/core';
 import { Subscription, interval, switchMap } from 'rxjs';
 import { Card } from '../../ncss/cards/card/card.component';
 import { Button } from '../../ncss/buttons/button/button.component';
@@ -22,6 +22,8 @@ export class AdminSightsPage implements OnInit, OnDestroy {
 
   private uploadService = inject(UploadService);
   private toast = inject(ToastService);
+
+  readonly isDev = isDevMode();
 
   job = signal<ImportJob | null>(null);
   selectedFile = signal<File | null>(null);
@@ -90,7 +92,8 @@ export class AdminSightsPage implements OnInit, OnDestroy {
       },
       error: err => {
         this.isUploading.set(false);
-        this.toast.error({ text: err.error?.error ?? 'Upload failed' });
+        console.error('Upload error raw:', err, 'err.error:', err.error, 'typeof:', typeof err.error);
+        this.toast.error({ text: this.extractErrorMessage(err), duration: 6000 });
       }
     });
   };
@@ -137,6 +140,26 @@ export class AdminSightsPage implements OnInit, OnDestroy {
       error: () => this.toast.error({ text: 'Failed to acknowledge' })
     });
   };
+
+  onClearAllSights = () => {
+    if (!confirm('This will permanently delete ALL sights and their images from BlobStorage. Continue?')) return;
+    this.uploadService.clearAllSights().subscribe({
+      next: () => this.toast.toast({ text: 'All sights cleared' }),
+      error: () => this.toast.error({ text: 'Failed to clear sights' })
+    });
+  };
+
+  private extractErrorMessage(err: { error: unknown; status?: number; statusText?: string }): string {
+    if (err.error != null) {
+      const body = typeof err.error === 'string'
+        ? (() => { try { return JSON.parse(err.error as string); } catch { return null; } })()
+        : err.error;
+      const msg = (body as { error?: string })?.error;
+      if (msg) return msg;
+    }
+    if (err.status) return `${err.status} ${err.statusText ?? 'Error'}`;
+    return 'Upload failed';
+  }
 
   private clearFileUpload(): void {
     this.selectedFile.set(null);

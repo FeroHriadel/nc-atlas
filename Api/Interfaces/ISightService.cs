@@ -13,4 +13,5 @@ public interface ISightService
     Task<SightDto> GetSightAsync(Guid id);
     Task<SightDto> UpdateSightAsync(Guid id, SightRequestDto request);
     Task DeleteSightAsync(Guid id);
+    Task DeleteAllSightsAsync();
 }

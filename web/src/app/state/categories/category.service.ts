@@ -11,4 +11,16 @@ export class CategoryService {
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${environment.apiUrl}/categories`);
   }
+
+  createCategory(name: string): Observable<Category> {
+    return this.http.post<Category>(`${environment.apiUrl}/categories`, { name });
+  }
+
+  updateCategory({newName, id}: {newName: string, id: number}): Observable<Category> {
+    return this.http.put<Category>(`${environment.apiUrl}/categories/${id}`, {name: newName});
+  }
+
+  deleteCategory(id: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/categories/${id}`);
+  }
 }

@@ -1,0 +1,43 @@
+<h1 class="page-title">Admin Tags</h1>
+<h2 class="page-subtitle mb-12">Add, Edit and Delete Tags</h2>
+
+<nc-crud-list
+    [items]="(tags$ | async) ?? []"
+    [noItemsText]="'No tags'"
+    [title]="'Tags'"
+    [onDelete]="confirmDeleteTag"
+    [onCreate]="openCreateTagModal"
+    [onUpdate]="openEditTagModal"
+    class="mb-12"
+>
+</nc-crud-list>
+
+<!-- Create Tag Modal -->
+<nc-modal
+  #createTagModal
+  [onConfirm]="onCreateTag"
+  [onClose]="clearNewTagName"
+>
+    <div slot="modal-content" [style]="{width: '400px'}">
+        <h3 class="section-title text-center">Create Tag</h3>
+        <p class="section-subtitle mb-6 text-center">Enter the name of the new tag you want to create.</p>
+        <label for="name" class="mb-1">Tag Name</label>
+        <input type="text" placeholder="Tag Name" name="name" id="name" class="w-100 mb-6" [(ngModel)]="newTagName" />
+        <br>
+    </div>
+</nc-modal>
+
+<!-- Edit Tag Modal -->
+<nc-modal
+  #editTagModal
+  [onConfirm]="onEditTag"
+  [onClose]="clearEditedTagName"
+>
+    <div slot="modal-content" [style]="{width: '400px'}">
+        <h3 class="section-title text-center">Edit Tag</h3>
+        <p class="section-subtitle mb-6 text-center">Update the name of the tag.</p>
+        <label for="edit-name" class="mb-1">Tag Name</label>
+        <input type="text" placeholder="Tag Name" name="edit-name" id="edit-name" class="w-100 mb-6" [(ngModel)]="editedTagName" />
+        <br>
+    </div>
+</nc-modal>

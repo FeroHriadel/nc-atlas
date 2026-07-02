@@ -49,7 +49,14 @@ public class CategoryService(AppDbContext db) : ICategoryService
     {
         var category = await FindCategoryAsync(id);
         db.Categories.Remove(category);
-        await SaveChangesAsync();
+        try
+        {
+            await db.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is SqlException { Number: 547 })
+        {
+            throw new ErrorRes("Cannot delete this category because it still has sights assigned to it. Reassign or delete those sights first.", StatusCodes.Status409Conflict);
+        }
     }
 
     private async Task<Category> FindCategoryAsync(int id)

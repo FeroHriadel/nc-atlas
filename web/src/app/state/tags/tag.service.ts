@@ -11,4 +11,16 @@ export class TagService {
   getTags(): Observable<Tag[]> {
     return this.http.get<Tag[]>(`${environment.apiUrl}/tags`);
   }
+
+  createTag(name: string): Observable<Tag> {
+    return this.http.post<Tag>(`${environment.apiUrl}/tags`, { name });
+  }
+
+  updateTag(id: string, name: string): Observable<Tag> {
+    return this.http.put<Tag>(`${environment.apiUrl}/tags/${id}`, { name });
+  }
+
+  deleteTag(id: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/tags/${id}`);
+  }
 }

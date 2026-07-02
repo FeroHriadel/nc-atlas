@@ -1,0 +1,43 @@
+<h1 class="page-title">Admin Categories</h1>
+<h2 class="page-subtitle mb-12">Add, Edit and Delete Categories</h2>
+
+<nc-crud-list
+    [items]="(this.categories$ | async) ?? []"
+    [noItemsText]="'No categories'"
+    [title]="'Categories'"
+    [onDelete]="confirmDeleteCategory"
+    [onCreate]="openCreateCategoryModal"
+    [onUpdate]="openEditCategoryModal"
+    class="mb-12"
+>
+</nc-crud-list>
+
+<!-- Create Category Modal -->
+<nc-modal
+  #createCategoryModal
+  [onConfirm]="onCreateCategory"
+  [onClose]="clearNewCategoryName"
+>
+    <div slot="modal-content" [style]="{width: '400px'}">
+        <h3 class="section-title text-center">Create Category</h3>
+        <p class="section-subtitle mb-6 text-center">Enter the name of the new category you want to create.</p>
+        <label for="name" class="mb-1">Category Name</label>
+        <input type="text" placeholder="Category Name" name="name" id="name" class="w-100 mb-6" [(ngModel)]="newCategoryName" />
+        <br>
+    </div>
+</nc-modal>
+
+<!-- Edit Category Modal -->
+<nc-modal
+  #editCategoryModal
+  [onConfirm]="onEditCategory"
+  [onClose]="clearEditedCategoryName"
+>
+    <div slot="modal-content" [style]="{width: '400px'}">
+        <h3 class="section-title text-center">Edit Category</h3>
+        <p class="section-subtitle mb-6 text-center">Update the name of the category.</p>
+        <label for="edit-name" class="mb-1">Category Name</label>
+        <input type="text" placeholder="Category Name" name="edit-name" id="edit-name" class="w-100 mb-6" [(ngModel)]="editedCategoryName" />
+        <br>
+    </div>
+</nc-modal>

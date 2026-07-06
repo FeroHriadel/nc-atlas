@@ -6,9 +6,10 @@ resource "azurerm_resource_group" "main" {
 module "image_storage" {
   source = "../../modules/blob-storage"
 
-  name_prefix         = "ncatlas-dev"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  name_prefix          = "ncatlas-dev"
+  location             = azurerm_resource_group.main.location
+  resource_group_name  = azurerm_resource_group.main.name
+  cors_allowed_origins = ["http://localhost:4200"]
 }
 
 module "aad_auth" {

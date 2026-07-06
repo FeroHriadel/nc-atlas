@@ -12,7 +12,7 @@ namespace Api.Controllers;
 
 public class EnrichmentsController(IImportService importService) : BaseAppController
 {
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [DisableRequestSizeLimit]
     [RequestFormLimits(MultipartBodyLengthLimit = 500_000_000)] // 500 MB ceiling for large enrichment zips
     [HttpPost("import")]
@@ -22,7 +22,7 @@ public class EnrichmentsController(IImportService importService) : BaseAppContro
         return Ok(result);
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpGet("import/latest")]
     public async Task<ActionResult<ImportJobDto>> GetLatestJob()
     {
@@ -31,14 +31,14 @@ public class EnrichmentsController(IImportService importService) : BaseAppContro
         return Ok(job);
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpGet("import/{jobId:guid}")]
     public async Task<ActionResult<ImportJobDto>> GetJob(Guid jobId)
     {
         return Ok(await importService.GetJobAsync(jobId));
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpPost("import/{jobId:guid}/abort")]
     public async Task<IActionResult> AbortJob(Guid jobId)
     {
@@ -46,7 +46,7 @@ public class EnrichmentsController(IImportService importService) : BaseAppContro
         return NoContent();
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpDelete("import")]
     public async Task<IActionResult> DeleteAllJobs()
     {

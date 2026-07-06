@@ -77,7 +77,7 @@ export class ToastService {
   private applyBaseStyles(element: HTMLDivElement): void {
     element.style.position = 'fixed';
     element.style.right = '20px';
-    element.style.padding = '12px 20px';
+    element.style.padding = '1rem';
     element.style.borderRadius = 'var(--nc-border-radius)';
     element.style.color = 'var(--nc-white-900)';
     element.style.fontSize = '16px';
@@ -86,7 +86,7 @@ export class ToastService {
     element.style.zIndex = '9999';
     element.style.minWidth = '260px';
     element.style.maxWidth = '260px';
-    element.style.minHeight = '100px';
+    element.style.minHeight = '50px';
     element.style.wordWrap = 'break-word';
     element.style.display = 'flex';
     element.style.justifyContent = 'center';

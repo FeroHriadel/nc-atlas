@@ -36,16 +36,25 @@ public class SightService(AppDbContext db, IBlobService blobService) : ISightSer
         return await GetSightAsync(sight.Id);
     }
 
-    public async Task<List<SightDto>> GetSightsAsync()
+    public async Task<PagedResultDto<SightDto>> GetSightsAsync(int page, int pageSize)
     {
+        var total = await db.Sights.CountAsync();
         var sights = await db.Sights
             .Include(s => s.Category)
             .Include(s => s.Tags)
             .Include(s => s.Images)
             .OrderByDescending(s => s.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return sights.Select(SightDto.FromEntity).ToList();
+        return new PagedResultDto<SightDto>
+        {
+            Items = sights.Select(SightDto.FromEntity).ToList(),
+            TotalCount = total,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     public async Task<SightDto> GetSightAsync(Guid id)

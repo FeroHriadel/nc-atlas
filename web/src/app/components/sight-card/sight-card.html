@@ -1,0 +1,18 @@
+<nc-card class="sight-card" width="300px" [style]="{minHeight: '450px'}">
+    @if (thumbnailUrl(); as thumb) {
+        <img class="sight-card-img" [src]="thumb" [alt]="sight()?.title" />
+    }
+    <div class="sight-card-body p-4">
+        <h3 class="section-title-light sight-card-title">{{ sight()?.title }}</h3>
+        <span class="sight-card-category">{{ sight()?.categoryName }}</span>
+        <p class="text sight-card-description">{{ sight()?.description }}</p>
+        @if (visibleTags().length) {
+            <div class="sight-card-tags">
+                @for (tag of visibleTags(); track tag.id) {
+                    <nc-pill size="small">{{ tag.name }}</nc-pill>
+                }
+            </div>
+        }
+        <nc-button size="small" variant="outline" class="sight-card-btn">Details</nc-button>
+    </div>
+</nc-card>

@@ -26,7 +26,7 @@ public class TagsController(ITagService tagService) : BaseAppController
         return await tagService.GetTagAsync(id);
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpPost]
     public async Task<ActionResult<TagDto>> CreateTag(TagRequestDto request)
     {
@@ -34,14 +34,14 @@ public class TagsController(ITagService tagService) : BaseAppController
         return CreatedAtAction(nameof(GetTag), new { id = tag.Id }, tag);
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<TagDto>> UpdateTag(Guid id, TagRequestDto request)
     {
         return await tagService.UpdateTagAsync(id, request.Name);
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteTag(Guid id)
     {

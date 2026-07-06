@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-admin-tags',
   templateUrl: './admin-tags.page.html',
   styleUrl: './admin-tags.page.css',
-  imports: [AsyncPipe, Button, CrudList, Card, Modal, FormsModule],
+  imports: [AsyncPipe, CrudList, Modal, FormsModule],
 })
 
 

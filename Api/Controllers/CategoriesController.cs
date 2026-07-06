@@ -31,7 +31,7 @@ public class CategoriesController(ICategoryService categoryService) : BaseAppCon
     }
 
     // POST: api/v1/categories
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpPost]
     public async Task<ActionResult<CategoryDto>> CreateCategory(CategoryRequestDto request)
     {
@@ -41,7 +41,7 @@ public class CategoriesController(ICategoryService categoryService) : BaseAppCon
 
 
     // PUT: api/v1/categories/{id}
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpPut("{id:int}")]
     public async Task<ActionResult<CategoryDto>> UpdateCategory(int id, CategoryRequestDto request)
     {
@@ -50,7 +50,7 @@ public class CategoriesController(ICategoryService categoryService) : BaseAppCon
 
 
     // DELETE: api/v1/categories/{id}
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCategory(int id)
     {

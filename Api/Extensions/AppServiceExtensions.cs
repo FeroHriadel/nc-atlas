@@ -7,11 +7,13 @@ using Api.Interfaces;
 using Api.Middleware;
 using Api.Services;
 using Api.Workers;
+using Azure.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph;
 using Microsoft.Identity.Web;
 
 
@@ -36,6 +38,13 @@ public static class AppServiceExtensions
             options.UseSqlServer(
                 configuration.GetConnectionString("Default"),
                 sql => sql.UseNetTopologySuite()));
+
+        var credential = new ClientSecretCredential(
+            configuration["AzureAd:TenantId"],
+            configuration["AzureAd:ClientId"],
+            configuration["AzureAd:ClientSecret"]);
+        services.AddSingleton(new GraphServiceClient(credential));
+        services.AddScoped<IGraphService, GraphService>();
 
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ITagService, TagService>();

@@ -10,12 +10,14 @@ export const adminGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
+  const isPrivileged = (role?: string) => role === Roles.Admin || role === Roles.Owner;
+
   const cachedUser = auth.currentUser();
   if (cachedUser) {
-    return cachedUser.role === Roles.Admin || router.createUrlTree(['/']);
+    return isPrivileged(cachedUser.role) || router.createUrlTree(['/']);
   }
 
   return auth.loadCurrentUser().pipe(
-    map((user) => (user?.role === Roles.Admin ? true : router.createUrlTree(['/'])))
+    map((user) => (isPrivileged(user?.role) ? true : router.createUrlTree(['/'])))
   );
 };

@@ -13,6 +13,16 @@ resource "azurerm_storage_account" "images" {
 
   # Required at the account level before any container can allow anonymous blob reads.
   allow_nested_items_to_be_public = true
+
+  blob_properties {
+    cors_rule {
+      allowed_headers    = ["*"]
+      allowed_methods    = ["PUT"]
+      allowed_origins    = var.cors_allowed_origins
+      exposed_headers    = ["*"]
+      max_age_in_seconds = 86400
+    }
+  }
 }
 
 resource "azurerm_storage_container" "images" {

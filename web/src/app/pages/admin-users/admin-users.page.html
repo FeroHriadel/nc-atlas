@@ -1,0 +1,61 @@
+<h1 class="page-title">Admin Users</h1>
+<h2 class="page-subtitle mb-6">Add, Edit and Delete Users</h2>
+
+<div class="mb-6" style="display: flex; justify-content: flex-end;">
+  <nc-button [onClick]="openCreateUserModal">Add User</nc-button>
+</div>
+
+<nc-table
+  [data]="(users$ | async) ?? []"
+  [columnsConfig]="columnsConfig"
+  class="mb-12"
+>
+</nc-table>
+
+<!-- Actions column template -->
+<ng-template #actionsTemplate let-row>
+  <div style="display: flex; gap: 8px;">
+    <nc-button size="small" variant="outline" [onClick]="openEditUserModal.bind(this, row)">Edit</nc-button>
+    <nc-button size="small" variant="red" [onClick]="confirmDeleteUser.bind(this, row)">Delete</nc-button>
+  </div>
+</ng-template>
+
+<!-- Create User Modal -->
+<nc-modal
+  #createUserModal
+  [onConfirm]="onCreateUser"
+  [onClose]="clearNewUser"
+>
+    <div slot="modal-content" [style]="{width: '400px'}">
+        <h3 class="section-title text-center">Create User</h3>
+        <p class="section-subtitle mb-6 text-center">Enter the details for the new user.</p>
+        <label for="display-name" class="mb-1">Display Name</label>
+        <input type="text" placeholder="Display Name" name="display-name" id="display-name" class="w-100 mb-4" [(ngModel)]="newDisplayName" />
+        <label for="email" class="mb-1">Email</label>
+        <input type="email" placeholder="Email" name="email" id="email" class="w-100 mb-4" [(ngModel)]="newEmail" />
+        <label for="password" class="mb-1">Temporary Password</label>
+        <input type="password" placeholder="Temporary Password" name="password" id="password" class="w-100 mb-4" [(ngModel)]="newTemporaryPassword" />
+        <label for="role" class="mb-1">Role</label>
+        <select name="role" id="role" class="w-100 mb-6" [(ngModel)]="newRole">
+            <option value="User">User</option>
+            <option value="Admin">Admin</option>
+        </select>
+    </div>
+</nc-modal>
+
+<!-- Edit User Modal -->
+<nc-modal
+  #editUserModal
+  [onConfirm]="onEditUser"
+  [onClose]="clearEditedUser"
+>
+    <div slot="modal-content" [style]="{width: '400px'}">
+        <h3 class="section-title text-center">Edit User Role</h3>
+        <p class="section-subtitle mb-6 text-center">Change the role of this user.</p>
+        <label for="edit-role" class="mb-1">Role</label>
+        <select name="edit-role" id="edit-role" class="w-100 mb-6" [(ngModel)]="editedRole">
+            <option value="User">User</option>
+            <option value="Admin">Admin</option>
+        </select>
+    </div>
+</nc-modal>

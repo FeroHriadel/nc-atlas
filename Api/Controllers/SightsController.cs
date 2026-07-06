@@ -12,10 +12,11 @@ namespace Api.Controllers;
 
 public class SightsController(ISightService sightService, IWebHostEnvironment env) : BaseAppController
 {
+    [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<List<SightDto>>> GetSights()
+    public async Task<ActionResult<PagedResultDto<SightDto>>> GetSights([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
-        return await sightService.GetSightsAsync();
+        return await sightService.GetSightsAsync(page, pageSize);
     }
 
     [HttpGet("{id:guid}")]
@@ -24,7 +25,7 @@ public class SightsController(ISightService sightService, IWebHostEnvironment en
         return await sightService.GetSightAsync(id);
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpPost]
     public async Task<ActionResult<SightDto>> CreateSight(SightRequestDto request)
     {
@@ -32,14 +33,14 @@ public class SightsController(ISightService sightService, IWebHostEnvironment en
         return CreatedAtAction(nameof(GetSight), new { id = sight.Id }, sight);
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<SightDto>> UpdateSight(Guid id, SightRequestDto request)
     {
         return await sightService.UpdateSightAsync(id, request);
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteSight(Guid id)
     {
@@ -47,7 +48,7 @@ public class SightsController(ISightService sightService, IWebHostEnvironment en
         return NoContent();
     }
 
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpDelete("all")]
     public async Task<IActionResult> DeleteAllSights()
     {

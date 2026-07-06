@@ -1,0 +1,34 @@
+<h1 class="page-title">MY ACCOUNT</h1>
+<h2 class="page-subtitle mb-12">Manage your account settings and preferencess</h2>
+
+<nc-card [style]="{maxWidth: '500px'}" class="p-4 mb-6 mx-auto">
+    <h3 class="section-title text-center">Account Information</h3>
+    <p class="section-subtitle text-center mb-6">View and update your account details</p>
+
+    <form [id]="formId" (submit)="onSubmit($event)">
+        <label class="mb-1">Profile Picture</label>
+        <div class="profile-image mb-4 text"
+             [style.background-image]="displayImageUrl() ? 'url(' + displayImageUrl() + ')' : null">
+            @if (!displayImageUrl()) {
+                <nc-user-icon [size]="200"></nc-user-icon>
+            }
+            <input #fileInput type="file" accept="image/*" class="hidden-file-input"
+                   name="profileImageUrl" (change)="onFileSelected($event)">
+            @if (displayImageUrl()) {
+                <button class="remove-image-button" type="button" (click)="removeProfileImage()">
+                    <nc-times-icon></nc-times-icon>
+                </button>
+            }
+        </div>
+
+        <label for="username" class="mb-1">Username</label>
+        <input id="username" name="username" placeholder="Enter your username" type="text" class="mb-4 w-100">
+
+        <label for="bio" class="mb-1">Bio</label>
+        <textarea id="bio" name="bio" rows="4" class="mb-4 w-100" placeholder="Write a few words about yourself..."></textarea>
+
+        <nc-button type="submit" class="w-100" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Saving...' : 'Update Account' }}
+        </nc-button>
+    </form>
+</nc-card>

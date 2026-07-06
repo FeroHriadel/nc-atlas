@@ -1,1 +1,11 @@
-admin page
+<h1 class="page-title">ADMIN DASHBOARD</h1>
+<h2 class="page-subtitle mb-12">Manage app Users, Sights, Tags and Categories</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+  @for (card of cards; track card.route) {
+    <nc-card class="p-4" [onClick]="navigate(card.route)" [style]="{cursor: 'pointer'}">
+      <h3 class="section-title">{{ card.title }}</h3>
+      <p class="section-subtitle mb-6">{{ card.subtitle }}</p>
+    </nc-card>
+  }
+</div>

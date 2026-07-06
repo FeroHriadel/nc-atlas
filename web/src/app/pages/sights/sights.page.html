@@ -1,0 +1,9 @@
+<h1 class="page-title">Sights</h1>
+<h2 class="page-subtitle mb-12">Find sights to explore</h2>
+
+<section class="flex justify-center gap-6 flex-wrap">
+    @for (sight of (sights$ | async); track sight.id) {
+        <app-sight-card [sight]="sight"></app-sight-card>
+        
+    }
+</section>

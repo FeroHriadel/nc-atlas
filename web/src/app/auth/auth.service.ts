@@ -24,7 +24,7 @@ export class AuthService {
   private http = inject(HttpClient);
 
   currentUser = signal<CurrentUser | null>(null);
-  isAdmin = computed(() => this.currentUser()?.role === Roles.Admin);
+  isAdmin = computed(() => this.currentUser()?.role === Roles.Admin || this.currentUser()?.role === Roles.Owner);
 
   isLoggedIn(): boolean {
     return this.msal.instance.getAllAccounts().length > 0;

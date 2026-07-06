@@ -18,3 +18,9 @@ variable "container_name" {
   type        = string
   default     = "images"
 }
+
+variable "cors_allowed_origins" {
+  description = "Origins allowed to make direct browser uploads to blob storage via SAS URLs"
+  type        = list(string)
+  default     = []
+}

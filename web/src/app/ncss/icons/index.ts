@@ -35,4 +35,7 @@ export { WarningIcon } from './warning.icon';
 export { AdjustIcon } from './adjust.icon';
 export { BoxOpenIcon } from './box-open.icon';
 export { TargetHumanIcon } from './target-human.icon';
+export { GpsIcon } from './gps.icon';
+export { FlagIcon } from './flag.icon';
+export { AreaIcon } from './area.icon';
 

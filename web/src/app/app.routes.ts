@@ -8,6 +8,7 @@ import { AdminTagsPage } from './pages/admin-tags/admin-tags.page';
 import { AdminUsersPage } from './pages/admin-users/admin-users.page';
 import { MyAccountPage } from './pages/my-account/my-account.page';
 import { SightsPage } from './pages/sights/sights.page';
+import { SightDetailPage } from './pages/sight-detail/sight-detail.page';
 
 export const routes: Routes = [
     { path: '', component: HomePage },
@@ -18,4 +19,5 @@ export const routes: Routes = [
     { path: 'admin/users', component: AdminUsersPage, canActivate: [adminGuard] },
     { path: 'myaccount', component: MyAccountPage },
     { path: 'sights', component: SightsPage },
+    { path: 'sights/:sightId', component: SightDetailPage },
 ];

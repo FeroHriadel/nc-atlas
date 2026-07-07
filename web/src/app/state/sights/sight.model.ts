@@ -16,6 +16,9 @@ export interface Sight {
     categoryName: string;
     latitude: number;
     longitude: number;
+    country: string | null;
+    state: string | null;
+    county: string | null;
     ratingAvg: number;
     ratingCount: number;
     source: string;

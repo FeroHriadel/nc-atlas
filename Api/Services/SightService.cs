@@ -24,6 +24,9 @@ public class SightService(AppDbContext db, IBlobService blobService) : ISightSer
             Description = request.Description,
             CategoryId = request.CategoryId,
             Location = CreateLocation(request.Latitude, request.Longitude),
+            Country = request.Country,
+            State = request.State,
+            County = request.County,
             Source = request.Source,
             CreatedAt = DateTime.UtcNow,
             Tags = tags,
@@ -93,6 +96,9 @@ public class SightService(AppDbContext db, IBlobService blobService) : ISightSer
         sight.Description = request.Description;
         sight.CategoryId = request.CategoryId;
         sight.Location = CreateLocation(request.Latitude, request.Longitude);
+        sight.Country = request.Country;
+        sight.State = request.State;
+        sight.County = request.County;
         sight.Source = request.Source;
 
         sight.Tags.Clear();

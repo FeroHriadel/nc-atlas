@@ -21,4 +21,8 @@ export class SightService {
 
         return this.http.get<PagedResult<Sight>>(`${environment.apiUrl}/sights`, { params });
     }
+
+    getSightById(id: string): Observable<Sight> {
+        return this.http.get<Sight>(`${environment.apiUrl}/sights/${id}`);
+    }
 }

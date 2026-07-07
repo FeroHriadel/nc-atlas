@@ -41,6 +41,18 @@ public class SightConfiguration : IEntityTypeConfiguration<Sight>
             .HasColumnType("geography")
             .IsRequired();
 
+        builder.Property(s => s.Country)
+            .HasColumnName("country")
+            .HasMaxLength(100);
+
+        builder.Property(s => s.State)
+            .HasColumnName("state")
+            .HasMaxLength(100);
+
+        builder.Property(s => s.County)
+            .HasColumnName("county")
+            .HasMaxLength(100);
+
         builder.Property(s => s.RatingAvg)
             .HasColumnName("rating_avg")
             .HasColumnType("decimal(3,2)");

@@ -15,6 +15,9 @@ public class SightDto
     public required string CategoryName { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    public string? Country { get; set; }
+    public string? State { get; set; }
+    public string? County { get; set; }
     public decimal RatingAvg { get; set; }
     public int RatingCount { get; set; }
     public required string Source { get; set; }
@@ -33,6 +36,9 @@ public class SightDto
         CategoryName = sight.Category.Name,
         Latitude = sight.Location.Y,
         Longitude = sight.Location.X,
+        Country = sight.Country,
+        State = sight.State,
+        County = sight.County,
         RatingAvg = sight.RatingAvg,
         RatingCount = sight.RatingCount,
         Source = sight.Source,

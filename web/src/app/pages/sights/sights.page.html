@@ -7,24 +7,28 @@
         placeholder="Search sights..."
         [value]="searchTerm"
         (input)="onSearchTermChange($any($event.target).value)"
+        [style]="{width: '200px'}"
     />
     <nc-select
         placeholder="All categories"
         [options]="categoryOptions()"
         [defaultValue]="initialCategoryValue"
         [onChange]="onCategoryChange"
+        [searchable]="true"
     ></nc-select>
     <nc-select
         placeholder="All tags"
         [options]="tagOptions()"
         [defaultValue]="initialTagValue"
         [onChange]="onTagChange"
+        [searchable]="true"
     ></nc-select>
     <nc-select
         placeholder="Sort by date"
         [options]="sortOptions"
         [defaultValue]="initialSortDirection"
         [onChange]="onSortDirectionChange"
+        [searchable]="true"
     ></nc-select>
 </div>
 

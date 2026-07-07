@@ -1,0 +1,40 @@
+@if (loading() === true) {
+  <span class="text-center text">Loading...</span>
+} @else if (error()) {
+  <span class="text-center text">Error loading sight details.</span>
+} @else if (sight()) {
+  <div class="sight-detail-wrap flex justify-center gap-6 align-start mb-12 mt-8">
+    <div class="sight-image-wrap">
+        <nc-card>
+            <img [src]="sight()!.images[0].imageUrl " alt="{{ sight()!.title }}" class="sight-image" />
+        </nc-card>
+    </div>
+    <span>
+        <h1 class="page-title text-left">{{ sight()!.title.toUpperCase() }}</h1>
+        <h2 class="page-subtitle text-left mb-8">{{ sight()!.categoryName }}</h2>
+        <div class="tags flex gap-2 flex-wrap mb-12">
+            @for (tag of sight()!.tags; track tag) {
+                <nc-pill>{{ tag.name }}</nc-pill>
+            }
+        </div>
+        <p class="country flex align-center text-left text mb-2 ml-1">
+            <nc-flag-icon [size]="20" class="mr-1" />
+            {{ sight()?.country?.toUpperCase() }}
+        </p>
+        <p class="county flex align-center text-left text mb-2 ml-1">
+            <nc-area-icon [size]="20" class="mr-1" />
+            {{ sight()?.county }}
+        </p>
+        <span class="gps-coords text-left flex align-center text mb-12">
+            <nc-gps-icon [size]="30" class="mr-1" />
+            {{ sight()?.latitude }}, {{ sight()?.longitude }}
+        </span>
+    </span>
+  </div>
+
+  <div class="sight-description-wrap mb-6">
+        <h3 class="section-subtitle mb-4">{{ sight()!.description }}</h3>
+  </div>
+} @else {
+  <span class="text-center text">No sight details available.</span>
+}

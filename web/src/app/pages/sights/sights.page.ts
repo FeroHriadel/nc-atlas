@@ -87,7 +87,9 @@ export class SightsPage implements OnInit {
             takeUntilDestroyed(this.destroyRef),
         ).subscribe(() => this.applyFilters());
 
-        this.loadNextPage();
+        // unconditional: the store is a long-lived singleton, so hasMore()/loading() may
+        // still reflect a stale result from a previous visit to this page this session
+        this.loadFirstPage();
     }
 
     onSearchTermChange(value: string): void {
@@ -117,10 +119,14 @@ export class SightsPage implements OnInit {
     }
 
     private applyFilters(): void {
+        this.loadFirstPage();
+        this.syncQueryParams();
+    }
+
+    private loadFirstPage(): void {
         this.nextPage = 1;
         this.dispatchLoad(1);
         this.nextPage++;
-        this.syncQueryParams();
     }
 
     private dispatchLoad(page: number): void {

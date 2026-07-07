@@ -1,0 +1,61 @@
+@media (max-width: 768px) {
+    .sight-detail-wrap {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .page-title, .country, .county {
+        text-align: center;
+    }
+
+    .page-subtitle {
+        text-align: center;
+        margin-bottom: 2rem
+    }
+
+    .section-subtitle {
+        text-align: center;
+    }
+
+    .gps-coords, .country, .county {
+        display: flex;
+        flex-direction: column;
+        margin-top: 1rem;
+    }
+
+    .tags {
+        justify-content: center;
+    }
+}
+
+.sight-image-wrap {
+    display: inline-block;
+}
+
+.sight-image {
+    width: 350px;
+    display: block;
+    border-radius: var(--nc-border-radius);
+}
+
+@media (max-width: 768px) {
+    .sight-image-wrap {
+        display: block;
+        width: 100%;
+    }
+
+    .sight-image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+}
+
+@media (max-width: 475px) {
+    .sight-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+}
+

@@ -25,6 +25,7 @@ public class SightsController(ISightService sightService, IWebHostEnvironment en
         return await sightService.GetSightsAsync(page, pageSize, search, categoryId, tagId, sortDirection);
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<SightDto>> GetSight(Guid id)
     {

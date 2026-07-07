@@ -22,4 +22,9 @@ export class SightCard {
     // images are ordered by sortOrder server-side; sortOrder 0 is always the 350px thumbnail
     thumbnailUrl = computed(() => this.sight()?.images[0]?.imageUrl);
     visibleTags = computed(() => this.sight()?.tags.slice(0, 3) ?? []);
+    locationLabel = computed(() => {
+        const sight = this.sight();
+        if (!sight) return '';
+        return [sight.county, sight.state, sight.country].filter(Boolean).join(', ');
+    });
 }

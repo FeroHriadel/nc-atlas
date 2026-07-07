@@ -13,6 +13,8 @@
                 }
             </div>
         }
-        <nc-button size="small" variant="outline" class="sight-card-btn">Details</nc-button>
+        <a class="sight-card-btn" [routerLink]="['/sights', sight()?.id]">
+            <nc-button size="small" variant="outline">Details</nc-button>
+        </a>
     </div>
 </nc-card>

@@ -1,6 +1,33 @@
 <h1 class="page-title">Sights</h1>
 <h2 class="page-subtitle mb-12">Find sights to explore</h2>
 
+<div class="sights-filter-bar flex gap-4 flex-wrap justify-center align-center mb-8">
+    <input
+        type="text"
+        placeholder="Search sights..."
+        [value]="searchTerm"
+        (input)="onSearchTermChange($any($event.target).value)"
+    />
+    <nc-select
+        placeholder="All categories"
+        [options]="categoryOptions()"
+        [defaultValue]="initialCategoryValue"
+        [onChange]="onCategoryChange"
+    ></nc-select>
+    <nc-select
+        placeholder="All tags"
+        [options]="tagOptions()"
+        [defaultValue]="initialTagValue"
+        [onChange]="onTagChange"
+    ></nc-select>
+    <nc-select
+        placeholder="Sort by date"
+        [options]="sortOptions"
+        [defaultValue]="initialSortDirection"
+        [onChange]="onSortDirectionChange"
+    ></nc-select>
+</div>
+
 <section class="flex justify-center gap-6 flex-wrap">
     @for (sight of (sights$ | async); track sight.id) {
         <app-sight-card [sight]="sight"></app-sight-card>
@@ -14,3 +41,5 @@
 @if (loading()) {
     <p class="section-subtitle-light text-center mt-6">Loading...</p>
 }
+
+<br><br>

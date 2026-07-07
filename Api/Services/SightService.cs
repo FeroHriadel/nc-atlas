@@ -36,14 +36,34 @@ public class SightService(AppDbContext db, IBlobService blobService) : ISightSer
         return await GetSightAsync(sight.Id);
     }
 
-    public async Task<PagedResultDto<SightDto>> GetSightsAsync(int page, int pageSize)
+    public async Task<PagedResultDto<SightDto>> GetSightsAsync(int page, int pageSize, string? search, int? categoryId, Guid? tagId, string sortDirection)
     {
-        var total = await db.Sights.CountAsync();
-        var sights = await db.Sights
+        var query = db.Sights
             .Include(s => s.Category)
             .Include(s => s.Tags)
             .Include(s => s.Images)
-            .OrderByDescending(s => s.CreatedAt)
+            .AsQueryable();
+
+        if (categoryId.HasValue)
+            query = query.Where(s => s.CategoryId == categoryId.Value);
+
+        if (tagId.HasValue)
+            query = query.Where(s => s.Tags.Any(t => t.Id == tagId.Value));
+
+        if (!string.IsNullOrWhiteSpace(search))
+            query = query.Where(s =>
+                s.Title.Contains(search) ||
+                s.Description.Contains(search) ||
+                s.Category.Name.Contains(search) ||
+                s.Tags.Any(t => t.Name.Contains(search)));
+
+        var total = await query.CountAsync();
+
+        query = sortDirection.Equals("asc", StringComparison.OrdinalIgnoreCase)
+            ? query.OrderBy(s => s.CreatedAt)
+            : query.OrderByDescending(s => s.CreatedAt);
+
+        var sights = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

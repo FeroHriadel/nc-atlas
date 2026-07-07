@@ -1,6 +1,13 @@
 import { Tag } from "../tags/tag.model";
 import { SightImage } from "../../types/SightImage";
 
+export interface SightFilters {
+    search?: string;
+    categoryId?: number;
+    tagId?: string;
+    sortDirection?: 'asc' | 'desc';
+}
+
 export interface Sight {
     id: string;
     title: string;

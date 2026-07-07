@@ -14,9 +14,15 @@ public class SightsController(ISightService sightService, IWebHostEnvironment en
 {
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<PagedResultDto<SightDto>>> GetSights([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    public async Task<ActionResult<PagedResultDto<SightDto>>> GetSights(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string? search = null,
+        [FromQuery] int? categoryId = null,
+        [FromQuery] Guid? tagId = null,
+        [FromQuery] string sortDirection = "desc")
     {
-        return await sightService.GetSightsAsync(page, pageSize);
+        return await sightService.GetSightsAsync(page, pageSize, search, categoryId, tagId, sortDirection);
     }
 
     [HttpGet("{id:guid}")]

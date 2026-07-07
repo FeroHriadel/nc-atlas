@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, exhaustMap, map, of } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SightActions } from './sight.actions';
 import { SightService } from './sight.service';
@@ -16,8 +16,8 @@ export class SightEffects {
     load$ = createEffect(() =>
       this.actions$.pipe(
         ofType(SightActions.load),
-        exhaustMap(({ page, pageSize }) =>
-          this.sightService.getSights(page, pageSize).pipe(
+        switchMap(({ page, pageSize, search, categoryId, tagId, sortDirection }) =>
+          this.sightService.getSights(page, pageSize, { search, categoryId, tagId, sortDirection }).pipe(
             map((result) => SightActions.loadSuccess({ result })),
             catchError((error) => of(SightActions.loadFailure({ error: extractError(error) }))),
           ),

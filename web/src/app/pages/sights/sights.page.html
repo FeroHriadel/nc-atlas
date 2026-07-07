@@ -4,6 +4,13 @@
 <section class="flex justify-center gap-6 flex-wrap">
     @for (sight of (sights$ | async); track sight.id) {
         <app-sight-card [sight]="sight"></app-sight-card>
-        
     }
 </section>
+
+@if (hasMore()) {
+    <div appInfiniteScroll (visible)="loadNextPage()"></div>
+}
+
+@if (loading()) {
+    <p class="section-subtitle-light text-center mt-6">Loading...</p>
+}

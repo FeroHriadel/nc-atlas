@@ -2,8 +2,6 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 460px;
-    overflow: hidden;
 }
 
 .sight-card-img {
@@ -56,10 +54,12 @@
     gap: 0.4rem;
     flex: 1;
     overflow: hidden;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .sight-card-btn {
     position: absolute;
-    bottom: 1.5rem;
+    bottom: 1rem;
     left: 1rem;
 }

@@ -16,6 +16,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<User> Users => Set<User>();
     public DbSet<ImportJob> ImportJobs => Set<ImportJob>();
     public DbSet<ImportJobItem> ImportJobItems => Set<ImportJobItem>();
+    public DbSet<SightFact> SightFacts => Set<SightFact>();
+    public DbSet<SightFactJob> SightFactJobs => Set<SightFactJob>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -299,6 +299,25 @@ select:focus {
     color: var(--nc-text-color-strong);
 }
 
+/* Section header with a small colored accent bar — used to mark distinct content blocks */
+.section-header-accent {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.section-accent-bar {
+    width: 4px;
+    height: 1.4rem;
+    border-radius: 2px;
+    background-color: var(--nc-black-600);
+    flex-shrink: 0;
+}
+
+.section-accent-bar-muted {
+    background-color: var(--nc-gray-400);
+}
+
 .section-subtitle-light {
     font-size: 1rem;
     font-weight: 400;

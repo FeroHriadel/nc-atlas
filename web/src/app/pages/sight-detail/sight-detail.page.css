@@ -1,26 +1,112 @@
-@media (max-width: 768px) {
-    .sight-detail-wrap {
+.sight-hero {
+    display: flex;
+    align-items: stretch;
+    gap: 1.5rem;
+}
+
+.sight-hero-image-wrap {
+    flex-shrink: 0;
+    width: 340px;
+}
+
+.sight-hero-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    border-radius: var(--nc-border-radius);
+    box-shadow: var(--nc-box-shadow-strong);
+}
+
+.sight-hero-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    border-radius: var(--nc-border-radius);
+    border: 1px solid var(--nc-border-color);
+    border-left: 4px solid var(--nc-black-600);
+    background-color: var(--nc-card-bg);
+    box-shadow: var(--nc-box-shadow);
+}
+
+.sight-hero-info-inner {
+    width: 100%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.sight-hero-title {
+    margin: 0;
+}
+
+.sight-category-badge {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--nc-white-900);
+    background-color: var(--nc-black-600);
+    padding: 0.3rem 0.9rem;
+    border-radius: 9999px;
+}
+
+.sight-meta-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 9999px;
+    background-color: var(--nc-card-bg);
+    border: 1px solid var(--nc-border-color);
+    font-size: 0.9rem;
+    color: var(--nc-text-color-light);
+}
+
+.description-card {
+    border-radius: var(--nc-border-radius);
+    box-shadow: var(--nc-box-shadow);
+    border: 1px solid var(--nc-border-color);
+    background-color: var(--nc-card-bg);
+    padding: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .sight-hero {
         flex-direction: column;
         align-items: center;
     }
 
-    .page-title, .country, .county {
+    .sight-hero-image-wrap {
+        width: 100%;
+        max-width: 340px;
+    }
+
+    .sight-hero-info {
+        width: 100%;
+    }
+
+    .sight-hero-info-inner {
+        align-items: center;
         text-align: center;
     }
 
-    .page-subtitle {
-        text-align: center;
-        margin-bottom: 2rem
-    }
-
-    .section-subtitle {
+    .sight-hero-title {
         text-align: center;
     }
 
-    .gps-coords, .country, .county {
-        display: flex;
-        flex-direction: column;
-        margin-top: 1rem;
+    .sight-meta-chips {
+        justify-content: center;
     }
 
     .tags {
@@ -28,34 +114,43 @@
     }
 }
 
-.sight-image-wrap {
-    display: inline-block;
+.sight-facts-edit textarea {
+    width: 100%;
+    min-height: 6rem;
 }
 
-.sight-image {
-    width: 350px;
-    display: block;
+.facts-state-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 1.5rem;
     border-radius: var(--nc-border-radius);
+    border: 1px dashed var(--nc-border-color);
+    background-color: var(--nc-card-bg);
 }
 
-@media (max-width: 768px) {
-    .sight-image-wrap {
-        display: block;
-        width: 100%;
-    }
-
-    .sight-image {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
-    }
+.facts-state-icon {
+    color: var(--nc-text-color-light);
 }
 
-@media (max-width: 475px) {
-    .sight-image {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
-    }
+.facts-state-box-error .facts-state-icon {
+    color: var(--nc-red-500);
 }
 
+.facts-state-box-empty .facts-state-icon {
+    opacity: 0.6;
+}
+
+.spinner {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 3px solid var(--nc-border-color);
+    border-top-color: var(--nc-black-600);
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

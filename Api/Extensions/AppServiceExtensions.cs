@@ -55,6 +55,11 @@ public static class AppServiceExtensions
         services.AddScoped<IImportService, ImportService>();
         services.AddHostedService<ImportBackgroundWorker>();
 
+        services.AddSingleton<IClaudeService, ClaudeService>();
+        services.AddScoped<ISightFactService, SightFactService>();
+        services.AddSingleton(Channel.CreateUnbounded<SightFactGenerationRequest>());
+        services.AddHostedService<SightFactBackgroundWorker>();
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(configuration.GetSection("AzureAd"));
         services.AddAuthorization();

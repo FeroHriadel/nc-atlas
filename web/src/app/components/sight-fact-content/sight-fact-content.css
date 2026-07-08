@@ -1,0 +1,137 @@
+.fact-section {
+    margin-bottom: 2.5rem;
+}
+
+.fact-item-title {
+    font-weight: 700;
+    color: var(--nc-text-color-strong);
+    margin-bottom: 0.35rem;
+}
+
+/* funFacts / dontMiss — responsive card grid, collapses on its own via auto-fill */
+.fact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.fact-card {
+    border-radius: var(--nc-border-radius);
+    box-shadow: var(--nc-box-shadow);
+    border: 1px solid var(--nc-border-color);
+    background-color: var(--nc-card-bg);
+    padding: 1.25rem;
+    transition: box-shadow 0.2s ease;
+}
+
+.fact-card:hover {
+    box-shadow: var(--nc-box-shadow-strong);
+}
+
+.fact-card-emoji {
+    font-size: 1.75rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* history — vertical timeline */
+.fact-timeline {
+    position: relative;
+    padding-left: 3rem;
+}
+
+.fact-timeline::before {
+    content: '';
+    position: absolute;
+    left: 1.1rem;
+    top: 0.25rem;
+    bottom: 0.25rem;
+    width: 2px;
+    background-color: var(--nc-border-color);
+}
+
+.fact-timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.fact-timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.fact-timeline-dot {
+    position: absolute;
+    left: -3rem;
+    top: 0;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background-color: var(--nc-card-bg);
+    border: 1px solid var(--nc-border-color);
+    box-shadow: var(--nc-box-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+/* people — avatar cards */
+.fact-people-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.fact-person-card {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    border-radius: var(--nc-border-radius);
+    border: 1px solid var(--nc-border-color);
+    background-color: var(--nc-card-bg);
+    padding: 1.1rem;
+}
+
+.fact-person-avatar {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: var(--nc-black-600);
+    color: var(--nc-white-900);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+/* historyContext — compact, muted, encyclopedic */
+.fact-context-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.fact-context-item {
+    border-left: 3px solid var(--nc-border-color);
+    padding: 0.25rem 0 0.25rem 1rem;
+}
+
+.fact-context-title {
+    font-weight: 700;
+    color: var(--nc-text-color-light);
+    margin-bottom: 0.15rem;
+}
+
+@media (max-width: 500px) {
+    .fact-timeline {
+        padding-left: 2.5rem;
+    }
+
+    .fact-timeline-dot {
+        left: -2.5rem;
+        width: 1.8rem;
+        height: 1.8rem;
+        font-size: 0.9rem;
+    }
+}

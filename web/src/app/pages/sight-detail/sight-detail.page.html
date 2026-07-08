@@ -3,37 +3,113 @@
 } @else if (error()) {
   <span class="text-center text">Error loading sight details.</span>
 } @else if (sight()) {
-  <div class="sight-detail-wrap flex justify-center gap-6 align-start mb-12 mt-8">
-    <div class="sight-image-wrap">
-        <nc-card>
-            <img [src]="sight()!.images[0].imageUrl " alt="{{ sight()!.title }}" class="sight-image" />
-        </nc-card>
+  <!-- image and details -->
+  <div class="sight-hero mb-12 mt-8">
+    <div class="sight-hero-image-wrap">
+        <img [src]="sight()!.images[0].imageUrl " alt="{{ sight()!.title }}" class="sight-hero-image" />
     </div>
-    <span>
-        <h1 class="page-title text-left">{{ sight()!.title.toUpperCase() }}</h1>
-        <h2 class="page-subtitle text-left mb-8">{{ sight()!.categoryName }}</h2>
-        <div class="tags flex gap-2 flex-wrap mb-12">
-            @for (tag of sight()!.tags; track tag) {
-                <nc-pill>{{ tag.name }}</nc-pill>
-            }
+    <div class="sight-hero-info">
+        <div class="sight-hero-info-inner">
+            <span class="sight-category-badge">{{ sight()!.categoryName }}</span>
+            <h1 class="page-title text-left sight-hero-title">{{ sight()!.title.toUpperCase() }}</h1>
+
+            <div class="sight-meta-chips">
+                @if (sight()?.country) {
+                    <span class="meta-chip">
+                        <nc-flag-icon [size]="16" class="icon" />
+                        {{ sight()!.country }}
+                    </span>
+                }
+                @if (sight()?.county) {
+                    <span class="meta-chip">
+                        <nc-area-icon [size]="16" class="icon" />
+                        {{ sight()!.county }}
+                    </span>
+                }
+                <span class="meta-chip">
+                    <nc-gps-icon [size]="18" class="icon" />
+                    {{ sight()?.latitude }}, {{ sight()?.longitude }}
+                </span>
+            </div>
+
+            <div class="tags flex gap-2 flex-wrap">
+                @for (tag of sight()!.tags; track tag) {
+                    <nc-pill>{{ tag.name }}</nc-pill>
+                }
+            </div>
         </div>
-        <p class="country flex align-center text-left text mb-2 ml-1">
-            <nc-flag-icon [size]="20" class="mr-1" />
-            {{ sight()?.country?.toUpperCase() }}
-        </p>
-        <p class="county flex align-center text-left text mb-2 ml-1">
-            <nc-area-icon [size]="20" class="mr-1" />
-            {{ sight()?.county }}
-        </p>
-        <span class="gps-coords text-left flex align-center text mb-12">
-            <nc-gps-icon [size]="30" class="mr-1" />
-            {{ sight()?.latitude }}, {{ sight()?.longitude }}
-        </span>
-    </span>
+    </div>
   </div>
 
-  <div class="sight-description-wrap mb-6">
-        <h3 class="section-subtitle mb-4">{{ sight()!.description }}</h3>
+  <!-- description -->
+  <div class="mb-12">
+        <div class="section-header-accent mb-4">
+            <span class="section-accent-bar"></span>
+            <h3 class="section-title-light">Description</h3>
+        </div>
+        <div class="description-card">
+            <p class="text">{{ sight()!.description }}</p>
+        </div>
+  </div>
+
+  <!-- Sight Facts -->
+  <div class="sight-facts-wrap mb-12">
+    <div class="section-header-accent mb-6">
+        <span class="section-accent-bar"></span>
+        <h3 class="section-title-light">Sight Facts</h3>
+    </div>
+
+    @if (factsLoading()) {
+      <div class="facts-state-box">
+        <span class="spinner"></span>
+        <p class="section-subtitle-light mt-3">Loading...</p>
+      </div>
+    } @else if (factsJob() && (factsJob()!.status === 'Pending' || factsJob()!.status === 'Processing')) {
+      <div class="facts-state-box">
+        <span class="spinner"></span>
+        <p class="section-subtitle-light mt-3">Generating facts&hellip;</p>
+        <p class="text-light">This can take a minute.</p>
+      </div>
+    } @else if (factsJob() && factsJob()!.status === 'Succeeded' && factsJob()!.result) {
+      <app-sight-fact-content [content]="factsJob()!.result!" class="mb-6" />
+
+      @if (!isEditingFacts()) {
+        <div class="flex gap-3 flex-wrap">
+          <nc-button [onClick]="onSaveFacts" [disabled]="factsActionLoading()">Save</nc-button>
+          <nc-button variant="outline" [onClick]="onStartEdit" [disabled]="factsActionLoading()">Edit</nc-button>
+        </div>
+      } @else {
+        <div class="sight-facts-edit">
+          <textarea
+            [ngModel]="feedbackText()"
+            (ngModelChange)="feedbackText.set($event)"
+            placeholder="Write what's wrong and how it should be improved"
+          ></textarea>
+          <div class="flex gap-3 flex-wrap mt-3">
+            <nc-button [onClick]="onSubmitEdit" [disabled]="factsActionLoading()">Submit</nc-button>
+            <nc-button variant="outline" [onClick]="onCancelEdit" [disabled]="factsActionLoading()">Cancel</nc-button>
+          </div>
+        </div>
+      }
+    } @else if (factsJob() && factsJob()!.status === 'Failed') {
+      <div class="facts-state-box facts-state-box-error">
+        <nc-warning-icon [size]="32" class="facts-state-icon" />
+        <p class="section-subtitle-light mt-3">{{ factsJob()!.errorMessage || 'Something went wrong generating facts.' }}</p>
+        @if (isAdmin()) {
+          <nc-button class="mt-4" [onClick]="onGetFacts" [disabled]="factsActionLoading()">Try again</nc-button>
+        }
+      </div>
+    } @else if (facts()) {
+      <app-sight-fact-content [content]="facts()!" />
+    } @else {
+      <div class="facts-state-box facts-state-box-empty">
+        <nc-info-icon [size]="32" class="facts-state-icon" />
+        <p class="section-subtitle-light mt-3">No Sight Facts available yet.</p>
+        @if (isAdmin()) {
+          <nc-button class="mt-4" [onClick]="onGetFacts" [disabled]="factsActionLoading()">Get Facts</nc-button>
+        }
+      </div>
+    }
   </div>
 } @else {
   <span class="text-center text">No sight details available.</span>

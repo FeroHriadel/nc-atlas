@@ -31,6 +31,13 @@ public class SightFactConfiguration : IEntityTypeConfiguration<SightFact>
             .HasColumnType("nvarchar(max)")
             .IsRequired();
 
+        builder.Property(f => f.SourceJobId).HasColumnName("source_job_id");
+
+        builder.HasOne<SightFactJob>()
+            .WithMany()
+            .HasForeignKey(f => f.SourceJobId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.Property(f => f.CreatedAt)
             .HasColumnName("created_at")
             .HasColumnType("datetime2");

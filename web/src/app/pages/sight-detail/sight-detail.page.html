@@ -100,7 +100,25 @@
         }
       </div>
     } @else if (facts()) {
-      <app-sight-fact-content [content]="facts()!" />
+      <app-sight-fact-content [content]="facts()!" class="mb-6" />
+
+      @if (isAdmin()) {
+        @if (!isEditingFacts()) {
+          <nc-button variant="outline" [onClick]="onStartEdit" [disabled]="factsActionLoading()">Edit</nc-button>
+        } @else {
+          <div class="sight-facts-edit">
+            <textarea
+              [ngModel]="feedbackText()"
+              (ngModelChange)="feedbackText.set($event)"
+              placeholder="Write what's wrong and how it should be improved"
+            ></textarea>
+            <div class="flex gap-3 flex-wrap mt-3">
+              <nc-button [onClick]="onSubmitEdit" [disabled]="factsActionLoading()">Submit</nc-button>
+              <nc-button variant="outline" [onClick]="onCancelEdit" [disabled]="factsActionLoading()">Cancel</nc-button>
+            </div>
+          </div>
+        }
+      }
     } @else {
       <div class="facts-state-box facts-state-box-empty">
         <nc-info-icon [size]="32" class="facts-state-icon" />

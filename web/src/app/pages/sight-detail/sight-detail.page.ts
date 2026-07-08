@@ -1,5 +1,6 @@
 import { Component, OnInit, DestroyRef, signal, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Sight } from '../../state/sights/sight.model';
 import { SightService } from '../../state/sights/sight.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,10 +13,14 @@ import { AuthService } from '../../auth/auth.service';
 import { SightFactService } from '../../state/sights/sight-fact.service';
 import { SightFactContent, SightFactJob } from '../../state/sights/sight-fact.model';
 import { SightFactContentComponent } from '../../components/sight-fact-content/sight-fact-content';
+import { ToastService } from '../../ncss/services/toast.service';
 
 
 
 const POLL_INTERVAL_MS = 2000;
+
+const extractError = (err: HttpErrorResponse): string =>
+  err.error?.error ?? err.message ?? String(err);
 
 @Component({
   selector: 'app-sight-detail',
@@ -42,6 +47,7 @@ export class SightDetailPage implements OnInit {
   private sightService = inject(SightService);
   private sightFactService = inject(SightFactService);
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
   private destroyRef = inject(DestroyRef);
 
   isAdmin = this.authService.isAdmin;
@@ -81,7 +87,10 @@ export class SightDetailPage implements OnInit {
           this.factsJob.set(job);
           this.pollJob(sightId, job.id);
         },
-        error: () => this.factsActionLoading.set(false)
+        error: (err) => {
+          this.factsActionLoading.set(false);
+          this.toastService.error({ text: `Failed to start fact generation: ${extractError(err)}`, duration: 5000 });
+        }
       });
   };
 
@@ -94,14 +103,17 @@ export class SightDetailPage implements OnInit {
     this.isEditingFacts.set(false);
   };
 
+  // With no active job (editing already-saved facts), previousJobId is omitted — the
+  // server chains off the job that produced the saved facts instead.
   onSubmitEdit = (): void => {
     const sightId = this.sight()?.id;
-    const job = this.factsJob();
     const feedback = this.feedbackText().trim();
-    if (!sightId || !job || !feedback || this.factsActionLoading()) return;
+    if (!sightId || !feedback || this.factsActionLoading()) return;
+
+    const previousJobId = this.factsJob()?.id;
 
     this.factsActionLoading.set(true);
-    this.sightFactService.createJob(sightId, feedback, job.id)
+    this.sightFactService.createJob(sightId, feedback, previousJobId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (newJob) => {
@@ -110,7 +122,10 @@ export class SightDetailPage implements OnInit {
           this.factsJob.set(newJob);
           this.pollJob(sightId, newJob.id);
         },
-        error: () => this.factsActionLoading.set(false)
+        error: (err) => {
+          this.factsActionLoading.set(false);
+          this.toastService.error({ text: `Failed to submit edit: ${extractError(err)}`, duration: 5000 });
+        }
       });
   };
 
@@ -128,7 +143,10 @@ export class SightDetailPage implements OnInit {
           this.facts.set(content);
           this.factsJob.set(null);
         },
-        error: () => this.factsActionLoading.set(false)
+        error: (err) => {
+          this.factsActionLoading.set(false);
+          this.toastService.error({ text: `Failed to save facts: ${extractError(err)}`, duration: 5000 });
+        }
       });
   };
 
@@ -155,7 +173,10 @@ export class SightDetailPage implements OnInit {
             this.facts.set(facts);
           }
         },
-        error: () => this.factsLoading.set(false)
+        error: (err) => {
+          this.factsLoading.set(false);
+          this.toastService.error({ text: `Failed to load sight facts: ${extractError(err)}`, duration: 5000 });
+        }
       });
   }
 
@@ -166,6 +187,9 @@ export class SightDetailPage implements OnInit {
         takeWhile((job) => job.status === 'Pending' || job.status === 'Processing', true),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((job) => this.factsJob.set(job));
+      .subscribe({
+        next: (job) => this.factsJob.set(job),
+        error: (err) => this.toastService.error({ text: `Lost connection while generating facts: ${extractError(err)}`, duration: 5000 })
+      });
   }
 }

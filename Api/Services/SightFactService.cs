@@ -51,7 +51,37 @@ public class SightFactService(AppDbContext db, Channel<SightFactGenerationReques
             return SightFactJobDto.FromEntity(inFlightJob, null);
 
         if (previousJobId.HasValue)
+        {
             await FindJobAsync(sightId, previousJobId.Value); // throws 404 if it doesn't belong to this sight
+        }
+        else
+        {
+            // no explicit previous job (e.g. editing already-saved facts) — chain off the job that produced them
+            previousJobId = await db.SightFacts
+                .Where(f => f.SightId == sightId)
+                .Select(f => f.SourceJobId)
+                .FirstOrDefaultAsync();
+        }
+
+        // an edit attempt was abandoned before being saved — don't let unsaved drafts pile up.
+        // Jobs still referenced by another job's PreviousJobId chain (or a sight's SourceJobId)
+        // must be skipped, or deleting them would violate the FK constraint that protects that chain.
+        var referencedJobIds = await db.SightFactJobs
+            .Where(j => j.SightId == sightId && j.PreviousJobId != null)
+            .Select(j => j.PreviousJobId!.Value)
+            .Union(db.SightFacts.Where(f => f.SightId == sightId && f.SourceJobId != null).Select(f => f.SourceJobId!.Value))
+            .ToListAsync();
+
+        var staleDrafts = await db.SightFactJobs
+            .Where(j => j.SightId == sightId
+                && j.SavedAt == null
+                && (j.Status == SightFactJobStatus.Succeeded || j.Status == SightFactJobStatus.Failed)
+                && j.Id != previousJobId
+                && !referencedJobIds.Contains(j.Id))
+            .ToListAsync();
+
+        if (staleDrafts.Count > 0)
+            db.SightFactJobs.RemoveRange(staleDrafts);
 
         var job = new SightFactJob
         {
@@ -88,6 +118,7 @@ public class SightFactService(AppDbContext db, Channel<SightFactGenerationReques
                 Id = Guid.NewGuid(),
                 SightId = sightId,
                 Content = job.Result,
+                SourceJobId = job.Id,
                 CreatedAt = now,
                 UpdatedAt = now
             });
@@ -95,6 +126,7 @@ public class SightFactService(AppDbContext db, Channel<SightFactGenerationReques
         else
         {
             existing.Content = job.Result;
+            existing.SourceJobId = job.Id;
             existing.UpdatedAt = now;
         }
 

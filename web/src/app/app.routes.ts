@@ -9,6 +9,8 @@ import { AdminUsersPage } from './pages/admin-users/admin-users.page';
 import { MyAccountPage } from './pages/my-account/my-account.page';
 import { SightsPage } from './pages/sights/sights.page';
 import { SightDetailPage } from './pages/sight-detail/sight-detail.page';
+import { TripPlannerPage } from './pages/trip-planner/trip-planner.page';
+import { TripDetailsPage } from './pages/trip-details/trip-details.page';
 
 export const routes: Routes = [
     { path: '', component: HomePage },
@@ -20,4 +22,6 @@ export const routes: Routes = [
     { path: 'myaccount', component: MyAccountPage },
     { path: 'sights', component: SightsPage },
     { path: 'sights/:sightId', component: SightDetailPage },
+    { path: 'trip-planner', component: TripPlannerPage },
+    { path: 'trip-details/:tripId', component: TripDetailsPage },
 ];

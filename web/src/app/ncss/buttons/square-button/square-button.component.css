@@ -31,6 +31,21 @@
     opacity: var(--nc-disabled-opacity);
 }
 
+.nc-square-button-medium {
+    height: 2.5rem;
+    min-width: 2.5rem;
+}
+
+.nc-square-button-small {
+    height: 2rem;
+    min-width: 2rem;
+}
+
+.nc-square-button-large {
+    height: 3rem;
+    min-width: 3rem;
+}
+
 
 /* Variant: "outline" */
 .nc-square-button-outline {

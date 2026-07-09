@@ -5,12 +5,12 @@ import { Pill } from '../../ncss/pills/pill/pill.component';
 import { Sight } from '../../state/sights/sight.model';
 import { RouterLink } from '@angular/router';
 import { HighlightPipe } from './highlight.pipe';
-
+import { AddToTripButton } from '../add-to-trip-button/add-to-trip-button';
 
 
 @Component({
   selector: 'app-sight-card',
-  imports: [Card, Button, Pill, RouterLink, HighlightPipe],
+  imports: [Card, Button, Pill, RouterLink, HighlightPipe, AddToTripButton],
   templateUrl: './sight-card.html',
   styleUrl: './sight-card.css',
 })

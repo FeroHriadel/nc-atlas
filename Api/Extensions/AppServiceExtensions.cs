@@ -33,6 +33,7 @@ public static class AppServiceExtensions
         services.AddScoped<OnActionExecutionMiddleware>();
         services.AddCors();
         services.AddEndpointsApiExplorer();
+        services.AddHttpClient();
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(
@@ -59,6 +60,9 @@ public static class AppServiceExtensions
         services.AddScoped<ISightFactService, SightFactService>();
         services.AddSingleton(Channel.CreateUnbounded<SightFactGenerationRequest>());
         services.AddHostedService<SightFactBackgroundWorker>();
+
+        services.AddScoped<ITripService, TripService>();
+        services.AddScoped<ITripItineraryService, TripItineraryService>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(configuration.GetSection("AzureAd"));

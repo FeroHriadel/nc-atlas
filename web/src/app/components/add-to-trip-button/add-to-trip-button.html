@@ -1,0 +1,39 @@
+<nc-popover #addToTripPopover class="p-3" [style]="{width: '220px'}">
+    <nc-square-button
+        slot="popover-trigger"
+        variant="ghost"
+        [size]="size()"
+        title="Add to trip"
+        [onClick]="onAddToTripTriggerClick"
+    >
+        <nc-car-icon class="text"></nc-car-icon>
+    </nc-square-button>
+    <div slot="popover-content" class="add-to-trip-content">
+        @if (!authService.currentUser()) {
+            <p class="section-subtitle-light mb-3">Log in to plan trips</p>
+            <nc-button size="small" [onClick]="onLogin">Log In</nc-button>
+        } @else {
+            <span class="section-title-light add-to-trip-title mb-2">Add to Trip</span>
+            @if ((trips$ | async)?.length) {
+                <ul class="add-to-trip-list">
+                    @for (trip of (trips$ | async); track trip.id) {
+                        <li class="add-to-trip-item" (click)="onAddToTrip(trip.id)">{{ trip.title }}</li>
+                    }
+                </ul>
+            } @else {
+                <p class="section-subtitle-light mb-2">No trips yet</p>
+            }
+            <div class="add-to-trip-new">
+                <input
+                    type="text"
+                    placeholder="New trip title"
+                    [(ngModel)]="newTripTitle"
+                    (keydown.enter)="onCreateTrip()"
+                />
+                <nc-square-button size="small" ariaLabel="Create trip" [onClick]="onCreateTrip">
+                    <nc-plus-icon></nc-plus-icon>
+                </nc-square-button>
+            </div>
+        }
+    </div>
+</nc-popover>

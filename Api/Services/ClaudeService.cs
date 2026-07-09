@@ -185,6 +185,71 @@ public class ClaudeService : IClaudeService
         }
         """;
 
+    private const string RouteSystemPrompt = """
+        You are a route-planning assistant for **Atlas**, a travel app. Given a list of sights a user plans to visit on one trip, determine the most efficient order to visit them by car — minimizing backtracking and total driving distance. The user's starting location is unknown, so pick whichever starting point yields the most sensible overall route (e.g. one geographic end of the cluster).
+
+        ## INPUT
+        A JSON array of stops, each with: id, title, latitude, longitude, and optionally country/state/county.
+
+        ## TASK
+        Order the stops into a logical driving route — group nearby stops together, avoid zig-zagging back and forth across the map. Use the coordinates as the primary signal.
+
+        ## OUTPUT FORMAT
+        Respond with ONLY valid JSON. No markdown code fences, no preamble. Use this exact schema:
+
+        ```
+        {
+          "summary": "string — one short paragraph (1-2 sentences) describing the overall route",
+          "stops": [
+            { "sightId": "string — must exactly match an input id", "note": "string — short one-line reason for this stop's position, e.g. direction/distance from the previous stop" }
+          ]
+        }
+        ```
+
+        "stops" must include every input id exactly once, in visiting order. The first stop's note should just introduce it as the starting point.
+
+        ## ERROR HANDLING
+        - if you cannot process the task for any reason, return exactly:
+        {"error": "Could not optimize route. <reason>"}
+
+        ## FINAL REMINDERS
+        - Output raw JSON only — the response will be parsed by a machine.
+        - Output language = English
+        """;
+
+    private static readonly string RouteSchemaJson = """
+        {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "summary": { "type": "string" },
+                "stops": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "sightId": { "type": "string" },
+                      "note": { "type": "string" }
+                    },
+                    "required": ["sightId", "note"],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["summary", "stops"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": { "error": { "type": "string" } },
+              "required": ["error"],
+              "additionalProperties": false
+            }
+          ]
+        }
+        """;
+
     private readonly AnthropicClient client;
 
     public ClaudeService(IConfiguration configuration)
@@ -215,7 +280,7 @@ public class ClaudeService : IClaudeService
             OutputConfig = new OutputConfig
             {
                 Effort = Effort.High,
-                Format = new JsonOutputFormat { Schema = BuildSchema() }
+                Format = new JsonOutputFormat { Schema = BuildSchema(SchemaJson) }
             },
             Messages = [new() { Role = Role.User, Content = userPrompt }]
         });
@@ -241,11 +306,75 @@ public class ClaudeService : IClaudeService
         return new SightFactGenerationResult { Content = content };
     }
 
-    private static Dictionary<string, JsonElement> BuildSchema()
+    public async Task<TripRouteOptimizationResult> OptimizeTripRouteAsync(
+        List<TripRouteSightData> sights,
+        CancellationToken cancellationToken)
     {
-        using var document = JsonDocument.Parse(SchemaJson);
+        var userPrompt = BuildRoutePrompt(sights);
+
+        var response = await client.Messages.Create(new MessageCreateParams
+        {
+            Model = Model.ClaudeSonnet5,
+            MaxTokens = 4000,
+            System = new List<TextBlockParam>
+            {
+                new() { Text = RouteSystemPrompt, CacheControl = new CacheControlEphemeral() }
+            },
+            OutputConfig = new OutputConfig
+            {
+                Effort = Effort.Medium,
+                Format = new JsonOutputFormat { Schema = BuildSchema(RouteSchemaJson) }
+            },
+            Messages = [new() { Role = Role.User, Content = userPrompt }]
+        }, cancellationToken: cancellationToken);
+
+        if (response.StopReason == "refusal")
+            return new TripRouteOptimizationResult { Error = "Claude declined to optimize this route." };
+
+        var textBlock = response.Content
+            .Select(b => b.Value)
+            .OfType<TextBlock>()
+            .FirstOrDefault();
+
+        if (textBlock is null)
+            return new TripRouteOptimizationResult { Error = "No text content in Claude's response." };
+
+        using var document = JsonDocument.Parse(textBlock.Text);
+        if (document.RootElement.TryGetProperty("error", out var errorProp))
+            return new TripRouteOptimizationResult { Error = errorProp.GetString() };
+
+        var route = JsonSerializer.Deserialize<TripRouteDto>(textBlock.Text, SightFactJsonOptions.Options)
+            ?? throw new InvalidOperationException("Claude returned an empty route payload.");
+
+        var validIds = sights.Select(s => s.Id).ToHashSet();
+        var routeIds = route.Stops.Select(s => s.SightId).ToHashSet();
+        if (route.Stops.Count != sights.Count || !routeIds.SetEquals(validIds))
+            return new TripRouteOptimizationResult { Error = "Claude returned an incomplete route." };
+
+        return new TripRouteOptimizationResult { Route = route };
+    }
+
+    private static Dictionary<string, JsonElement> BuildSchema(string schemaJson)
+    {
+        using var document = JsonDocument.Parse(schemaJson);
         return document.RootElement.EnumerateObject()
             .ToDictionary(p => p.Name, p => p.Value.Clone());
+    }
+
+    private static string BuildRoutePrompt(List<TripRouteSightData> sights)
+    {
+        var stops = sights.Select(s => new
+        {
+            id = s.Id,
+            title = s.Title,
+            latitude = s.Latitude,
+            longitude = s.Longitude,
+            country = s.Country,
+            state = s.State,
+            county = s.County
+        });
+
+        return JsonSerializer.Serialize(stops, new JsonSerializerOptions { WriteIndented = true });
     }
 
     private static string BuildUserPrompt(SightFactPromptData sight, SightFactContentDto? previousResult, string? feedback)

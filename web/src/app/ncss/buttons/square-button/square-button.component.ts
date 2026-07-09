@@ -16,7 +16,7 @@ export class SquareButton {
   @Input() class?: string = '';
   @Input() style?: { [key: string]: string } = {};
   @Input() id?: string = '';
-  @Input() size?: string = '2.5rem';
+  @Input() size?: 'small' | 'medium' | 'large' = 'medium';
   @Input() disabled?: boolean = false;
   @Input() type?: 'button' | 'submit' = 'button';
   @Input() onClick?: () => void;

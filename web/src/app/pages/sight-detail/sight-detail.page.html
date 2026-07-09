@@ -6,6 +6,7 @@
 
   <!-- hero -->
   <nc-card class="hero-card flex gap-6 mb-6">
+    <app-add-to-trip-button [sightId]="sight()!.id" size="medium" class="hero-add-to-trip" />
     <img [src]="sight()!.images[0]?.imageUrl" class="hero-image border-radius">
     <span class="hero-text p-4">
         <nc-pill 

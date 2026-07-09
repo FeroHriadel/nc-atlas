@@ -16,8 +16,11 @@
                 }
             </div>
         }
-        <a class="sight-card-btn" [routerLink]="['/sights', sight()?.id]">
-            <nc-button size="small" variant="outline">Details</nc-button>
-        </a>
+        <div class="sight-card-actions flex justify-between">
+            <a class="sight-card-btn" [routerLink]="['/sights', sight()?.id]">
+                <nc-button size="small" variant="outline">Details</nc-button>
+            </a>
+            <app-add-to-trip-button [sightId]="sight()!.id" />
+        </div>
     </div>
 </nc-card>

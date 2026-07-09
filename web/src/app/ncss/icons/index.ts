@@ -38,4 +38,5 @@ export { TargetHumanIcon } from './target-human.icon';
 export { GpsIcon } from './gps.icon';
 export { FlagIcon } from './flag.icon';
 export { AreaIcon } from './area.icon';
+export { CarIcon } from './car.icon';
 

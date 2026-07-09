@@ -15,6 +15,7 @@ import { SightFactContent, SightFactJob } from '../../state/sights/sight-fact.mo
 import { SightFactContentComponent } from '../../components/sight-fact-content/sight-fact-content';
 import { ToastService } from '../../ncss/services/toast.service';
 import { Card } from '../../ncss/cards/card/card.component';
+import { AddToTripButton } from '../../components/add-to-trip-button/add-to-trip-button';
 
 
 
@@ -27,7 +28,7 @@ const extractError = (err: HttpErrorResponse): string =>
   selector: 'app-sight-detail',
   templateUrl: './sight-detail.page.html',
   styleUrl: './sight-detail.page.css',
-  imports: [Pill, Button, GpsIcon, FlagIcon, AreaIcon, InfoIcon, WarningIcon, FormsModule, SightFactContentComponent, Card]
+  imports: [Pill, Button, GpsIcon, FlagIcon, AreaIcon, InfoIcon, WarningIcon, FormsModule, SightFactContentComponent, Card, AddToTripButton]
 })
 
 

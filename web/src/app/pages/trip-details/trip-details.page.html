@@ -1,0 +1,50 @@
+@if (!authService.currentUser()) {
+    <h1 class="page-title">Trip Details</h1>
+    <p class="section-subtitle-light mb-4">Log in to view this trip.</p>
+} @else if (viewState$ | async; as state) {
+    @if (state.trip; as trip) {
+        <h1 class="page-title">{{ trip.title }}</h1>
+        @if (trip.note) {
+            <h2 class="page-subtitle">{{ trip.note }}</h2>
+        }
+
+        <div class="trip-details-actions flex gap-3 my-12">
+            <nc-button size="small" [onClick]="goToSights">+ Add Trip</nc-button>
+            <nc-button size="small" variant="outline" [onClick]="openEditTripModal">Edit Trip</nc-button>
+            <nc-button size="small" variant="outline" [onClick]="onDownload" [disabled]="downloading()">Download</nc-button>
+            <nc-button size="small" variant="red" [onClick]="onDeleteTrip">Delete Trip</nc-button>
+        </div>
+
+        <nc-card-list
+            [items]="(sightItems$ | async) ?? []"
+            [noItemsText]="'No sights added to this trip yet'"
+            [title]="'Sights'"
+            [onClick]="openSightDetails"
+            [onDelete]="confirmRemoveSight"
+            [createButton]="false"
+            [updateButton]="false"
+            class="mb-12"
+        >
+        </nc-card-list>
+
+        <!-- Edit Trip Modal -->
+        <nc-modal
+          #editTripModal
+          [onConfirm]="onEditTrip"
+          [onClose]="clearEditedTrip"
+        >
+            <div slot="modal-content" [style]="{width: '400px'}">
+                <h3 class="section-title text-center">Edit Trip</h3>
+                <p class="section-subtitle mb-6 text-center">Update the title and note of the trip.</p>
+                <label for="edit-title" class="mb-1">Title</label>
+                <input type="text" placeholder="Trip Title" name="edit-title" id="edit-title" class="w-100 mb-4" [(ngModel)]="editedTripTitle" />
+                <label for="edit-note" class="mb-1">Note</label>
+                <textarea placeholder="Trip Note" name="edit-note" id="edit-note" class="w-100 mb-6" [(ngModel)]="editedTripNote"></textarea>
+                <br>
+            </div>
+        </nc-modal>
+    } @else if (!state.loading) {
+        <h1 class="page-title">Trip Details</h1>
+        <p class="section-subtitle-light mb-4">Trip not found.</p>
+    }
+}

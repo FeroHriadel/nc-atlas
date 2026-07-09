@@ -3,6 +3,13 @@
         overflow: hidden;
 }
 
+.hero-add-to-trip {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1;
+}
+
 .hero-image {
     width: 350px;
     object-fit: cover;

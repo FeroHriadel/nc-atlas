@@ -18,6 +18,8 @@ import { userFeature } from './state/users/user.reducer';
 import { UserEffects } from './state/users/user.effects';
 import { sightFeature } from './state/sights/sight.reducer';
 import { SightEffects } from './state/sights/sight.effects';
+import { tripFeature } from './state/trips/trip.reducer';
+import { TripEffects } from './state/trips/trip.effects';
 import { msalGuardConfigFactory, msalInstanceFactory, msalInterceptorConfigFactory } from './auth/msal.config';
 import { authInterceptor } from './auth/auth.interceptor';
 
@@ -31,7 +33,8 @@ export const appConfig: ApplicationConfig = {
     provideState(tagFeature),
     provideState(userFeature),
     provideState(sightFeature),
-    provideEffects(CategoryEffects, TagEffects, UserEffects, SightEffects),
+    provideState(tripFeature),
+    provideEffects(CategoryEffects, TagEffects, UserEffects, SightEffects, TripEffects),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     importProvidersFrom(
       MsalModule.forRoot(msalInstanceFactory(), msalGuardConfigFactory(), msalInterceptorConfigFactory())

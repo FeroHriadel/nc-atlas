@@ -1,0 +1,38 @@
+.add-to-trip-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-to-trip-title {
+    display: block;
+}
+
+.add-to-trip-list {
+    list-style: none;
+    margin: 0 0 0.75rem;
+    padding: 0;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.add-to-trip-item {
+    padding: 0.5rem 0.25rem;
+    border-radius: var(--nc-border-radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.add-to-trip-item:hover {
+    background-color: var(--nc-pill-bg);
+}
+
+.add-to-trip-new {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.add-to-trip-new input {
+    flex: 1;
+    min-width: 0;
+}

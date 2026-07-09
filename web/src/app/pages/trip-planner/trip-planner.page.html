@@ -1,0 +1,53 @@
+<h1 class="page-title">Trip Planner</h1>
+<h2 class="page-subtitle mb-12">Plan trips and manage your itinerary</h2>
+
+@if (!authService.currentUser()) {
+    <p class="section-subtitle-light mb-4">Log in to start planning your trips.</p>
+    <nc-button [onClick]="onLogin">Log In</nc-button>
+} @else {
+    <nc-card-list
+        [items]="(trips$ | async) ?? []"
+        [noItemsText]="'No trips yet'"
+        [title]="'My Trips'"
+        [onClick]="openTripDetails"
+        [onDelete]="confirmDeleteTrip"
+        [onCreate]="openCreateTripModal"
+        [onUpdate]="openEditTripModal"
+        class="mb-12"
+    >
+    </nc-card-list>
+
+    <!-- Create Trip Modal -->
+    <nc-modal
+      #createTripModal
+      [onConfirm]="onCreateTrip"
+      [onClose]="clearNewTrip"
+    >
+        <div slot="modal-content" [style]="{width: '400px'}">
+            <h3 class="section-title text-center">Create Trip</h3>
+            <p class="section-subtitle mb-6 text-center">Give your trip a title and an optional note.</p>
+            <label for="title" class="mb-1">Title</label>
+            <input type="text" placeholder="Trip Title" name="title" id="title" class="w-100 mb-4" [(ngModel)]="newTripTitle" />
+            <label for="note" class="mb-1">Note</label>
+            <textarea placeholder="Trip Note" name="note" id="note" class="w-100 mb-6" [(ngModel)]="newTripNote"></textarea>
+            <br>
+        </div>
+    </nc-modal>
+
+    <!-- Edit Trip Modal -->
+    <nc-modal
+      #editTripModal
+      [onConfirm]="onEditTrip"
+      [onClose]="clearEditedTrip"
+    >
+        <div slot="modal-content" [style]="{width: '400px'}">
+            <h3 class="section-title text-center">Edit Trip</h3>
+            <p class="section-subtitle mb-6 text-center">Update the title and note of the trip.</p>
+            <label for="edit-title" class="mb-1">Title</label>
+            <input type="text" placeholder="Trip Title" name="edit-title" id="edit-title" class="w-100 mb-4" [(ngModel)]="editedTripTitle" />
+            <label for="edit-note" class="mb-1">Note</label>
+            <textarea placeholder="Trip Note" name="edit-note" id="edit-note" class="w-100 mb-6" [(ngModel)]="editedTripNote"></textarea>
+            <br>
+        </div>
+    </nc-modal>
+}

@@ -84,10 +84,15 @@
     margin-bottom: 1rem;
 }
 
-.sight-card-btn {
+.sight-card-actions {
     position: absolute;
     bottom: 1rem;
     left: 1rem;
+    width: calc(100% - 2rem);
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+
 }
 
 .highlight {

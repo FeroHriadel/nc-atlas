@@ -4,12 +4,13 @@ import { Button } from '../../ncss/buttons/button/button.component';
 import { Pill } from '../../ncss/pills/pill/pill.component';
 import { Sight } from '../../state/sights/sight.model';
 import { RouterLink } from '@angular/router';
+import { HighlightPipe } from './highlight.pipe';
 
 
 
 @Component({
   selector: 'app-sight-card',
-  imports: [Card, Button, Pill, RouterLink],
+  imports: [Card, Button, Pill, RouterLink, HighlightPipe],
   templateUrl: './sight-card.html',
   styleUrl: './sight-card.css',
 })
@@ -18,6 +19,7 @@ import { RouterLink } from '@angular/router';
 
 export class SightCard {
     sight = input<Sight>();
+    searchTerm = input('');
 
     // images are ordered by sortOrder server-side; sortOrder 0 is always the 350px thumbnail
     thumbnailUrl = computed(() => this.sight()?.images[0]?.imageUrl);

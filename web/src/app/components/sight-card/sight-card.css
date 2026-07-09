@@ -89,3 +89,10 @@
     bottom: 1rem;
     left: 1rem;
 }
+
+.highlight {
+    background-color: var(--nc-pill-bg);
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 0.1em;
+}

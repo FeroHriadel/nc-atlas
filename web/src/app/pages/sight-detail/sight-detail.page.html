@@ -42,7 +42,7 @@
   </nc-card>
 
   <!-- description -->
-  <div class="mb-12">
+  <div class="mb-6">
 
         <div class="description-card">
             <p class="text">{{ sight()!.description }}</p>
@@ -50,7 +50,7 @@
   </div>
 
   <!-- Sight Facts -->
-  <div class="sight-facts-wrap mb-12">
+  <nc-card class="sight-facts-wrap p-4 mb-12">
     <div class="section-header-accent mb-6">
         <span class="section-accent-bar"></span>
         <h3 class="section-title">Sight Facts</h3>
@@ -134,7 +134,7 @@
         }
       </div>
     }
-  </div>
+  </nc-card>
 } @else {
   <span class="text-center text">No sight details available.</span>
 }

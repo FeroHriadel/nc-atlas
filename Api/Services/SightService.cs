@@ -58,7 +58,10 @@ public class SightService(AppDbContext db, IBlobService blobService) : ISightSer
                 s.Title.Contains(search) ||
                 s.Description.Contains(search) ||
                 s.Category.Name.Contains(search) ||
-                s.Tags.Any(t => t.Name.Contains(search)));
+                s.Tags.Any(t => t.Name.Contains(search)) ||
+                (s.Country != null && s.Country.Contains(search)) ||
+                (s.State != null && s.State.Contains(search)) ||
+                (s.County != null && s.County.Contains(search)));
 
         var total = await query.CountAsync();
 

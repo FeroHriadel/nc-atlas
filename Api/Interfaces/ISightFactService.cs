@@ -11,4 +11,6 @@ public interface ISightFactService
     Task<SightFactJobDto> GetJobAsync(Guid sightId, Guid jobId);
     Task<SightFactJobDto> CreateJobAsync(Guid sightId, string? feedback, Guid? previousJobId);
     Task<SightFactContentDto> SaveFromJobAsync(Guid sightId, Guid jobId);
+    Task DiscardJobAsync(Guid sightId, Guid jobId);
+    Task DeleteFactsAsync(Guid sightId);
 }

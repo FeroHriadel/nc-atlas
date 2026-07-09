@@ -34,6 +34,14 @@ export class SightFactService {
         return this.http.post<SightFactContent>(`${environment.apiUrl}/sights/${sightId}/facts/from-job/${jobId}`, {});
     }
 
+    discardJob(sightId: string, jobId: string): Observable<void> {
+        return this.http.delete<void>(`${environment.apiUrl}/sights/${sightId}/fact-jobs/${jobId}`);
+    }
+
+    deleteFacts(sightId: string): Observable<void> {
+        return this.http.delete<void>(`${environment.apiUrl}/sights/${sightId}/facts`);
+    }
+
     // 404 means "nothing yet" here, not an error — anything else should still surface to the caller
     private recoverFrom404<T>(err: unknown): Observable<T | null> {
         if (err instanceof HttpErrorResponse && err.status === 404) return of(null);

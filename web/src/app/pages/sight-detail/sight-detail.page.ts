@@ -14,6 +14,7 @@ import { SightFactService } from '../../state/sights/sight-fact.service';
 import { SightFactContent, SightFactJob } from '../../state/sights/sight-fact.model';
 import { SightFactContentComponent } from '../../components/sight-fact-content/sight-fact-content';
 import { ToastService } from '../../ncss/services/toast.service';
+import { Card } from '../../ncss/cards/card/card.component';
 
 
 
@@ -26,7 +27,7 @@ const extractError = (err: HttpErrorResponse): string =>
   selector: 'app-sight-detail',
   templateUrl: './sight-detail.page.html',
   styleUrl: './sight-detail.page.css',
-  imports: [Pill, Button, GpsIcon, FlagIcon, AreaIcon, InfoIcon, WarningIcon, FormsModule, SightFactContentComponent]
+  imports: [Pill, Button, GpsIcon, FlagIcon, AreaIcon, InfoIcon, WarningIcon, FormsModule, SightFactContentComponent, Card]
 })
 
 
@@ -146,6 +147,50 @@ export class SightDetailPage implements OnInit {
         error: (err) => {
           this.factsActionLoading.set(false);
           this.toastService.error({ text: `Failed to save facts: ${extractError(err)}`, duration: 5000 });
+        }
+      });
+  };
+
+  // Discards an unsaved draft job (Succeeded or Failed) and falls back to whatever was
+  // last actually saved — or the empty state if nothing was ever saved.
+  onDiscardDraft = (): void => {
+    const sightId = this.sight()?.id;
+    const job = this.factsJob();
+    if (!sightId || !job || this.factsActionLoading()) return;
+
+    this.factsActionLoading.set(true);
+    this.sightFactService.discardJob(sightId, job.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.factsActionLoading.set(false);
+          this.isEditingFacts.set(false);
+          this.factsJob.set(null);
+          this.loadFactsState(sightId);
+        },
+        error: (err) => {
+          this.factsActionLoading.set(false);
+          this.toastService.error({ text: `Failed to discard draft: ${extractError(err)}`, duration: 5000 });
+        }
+      });
+  };
+
+  onDeleteFacts = (): void => {
+    const sightId = this.sight()?.id;
+    if (!sightId || this.factsActionLoading()) return;
+    if (!confirm('Delete all Sight Facts for this sight? This cannot be undone.')) return;
+
+    this.factsActionLoading.set(true);
+    this.sightFactService.deleteFacts(sightId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.factsActionLoading.set(false);
+          this.facts.set(null);
+        },
+        error: (err) => {
+          this.factsActionLoading.set(false);
+          this.toastService.error({ text: `Failed to delete facts: ${extractError(err)}`, duration: 5000 });
         }
       });
   };

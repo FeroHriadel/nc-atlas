@@ -2,8 +2,8 @@
     @if (content().funFacts.length) {
         <section class="fact-section">
             <div class="section-header-accent mb-4">
-                <span class="section-accent-bar"></span>
-                <h3 class="section-title-light">Fun Facts</h3>
+                <span class="section-accent-bar section-accent-bar-muted"></span>
+                <h3 class="section-subtitle">Fun Facts</h3>
             </div>
             <div class="fact-grid">
                 @for (item of content().funFacts; track item.title) {
@@ -20,8 +20,8 @@
     @if (content().history.length) {
         <section class="fact-section">
             <div class="section-header-accent mb-4">
-                <span class="section-accent-bar"></span>
-                <h3 class="section-title-light">History</h3>
+                <span class="section-accent-bar section-accent-bar-muted"></span>
+                <h3 class="section-subtitle">History</h3>
             </div>
             <div class="fact-timeline">
                 @for (item of content().history; track item.title) {
@@ -40,8 +40,8 @@
     @if (content().dontMiss.length) {
         <section class="fact-section">
             <div class="section-header-accent mb-4">
-                <span class="section-accent-bar"></span>
-                <h3 class="section-title-light">Don't Miss</h3>
+                <span class="section-accent-bar section-accent-bar-muted"></span>
+                <h3 class="section-subtitle">Don't Miss</h3>
             </div>
             <div class="fact-grid">
                 @for (item of content().dontMiss; track item.title) {
@@ -58,8 +58,8 @@
     @if (content().people.length) {
         <section class="fact-section">
             <div class="section-header-accent mb-4">
-                <span class="section-accent-bar"></span>
-                <h3 class="section-title-light">People</h3>
+                <span class="section-accent-bar section-accent-bar-muted"></span>
+                <h3 class="section-subtitle">People</h3>
             </div>
             <div class="fact-people-grid">
                 @for (person of content().people; track person.name) {
@@ -79,7 +79,7 @@
         <section class="fact-section">
             <div class="section-header-accent mb-4">
                 <span class="section-accent-bar section-accent-bar-muted"></span>
-                <h3 class="section-title-light">Background</h3>
+                <h3 class="section-subtitle">Background</h3>
             </div>
             <div class="fact-context-list">
                 @for (item of content().historyContext; track item.title) {

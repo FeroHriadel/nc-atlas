@@ -3,50 +3,47 @@
 } @else if (error()) {
   <span class="text-center text">Error loading sight details.</span>
 } @else if (sight()) {
-  <!-- image and details -->
-  <div class="sight-hero mb-12 mt-8">
-    <div class="sight-hero-image-wrap">
-        <img [src]="sight()!.images[0].imageUrl " alt="{{ sight()!.title }}" class="sight-hero-image" />
-    </div>
-    <div class="sight-hero-info">
-        <div class="sight-hero-info-inner">
-            <span class="sight-category-badge">{{ sight()!.categoryName }}</span>
-            <h1 class="page-title text-left sight-hero-title">{{ sight()!.title.toUpperCase() }}</h1>
 
-            <div class="sight-meta-chips">
-                @if (sight()?.country) {
-                    <span class="meta-chip">
-                        <nc-flag-icon [size]="16" class="icon" />
-                        {{ sight()!.country }}
-                    </span>
-                }
-                @if (sight()?.county) {
-                    <span class="meta-chip">
-                        <nc-area-icon [size]="16" class="icon" />
-                        {{ sight()!.county }}
-                    </span>
-                }
-                <span class="meta-chip">
-                    <nc-gps-icon [size]="18" class="icon" />
-                    {{ sight()?.latitude }}, {{ sight()?.longitude }}
-                </span>
-            </div>
-
-            <div class="tags flex gap-2 flex-wrap">
-                @for (tag of sight()!.tags; track tag) {
-                    <nc-pill>{{ tag.name }}</nc-pill>
-                }
-            </div>
-        </div>
-    </div>
-  </div>
+  <!-- hero -->
+  <nc-card class="hero-card flex gap-6 mb-6">
+    <img [src]="sight()!.images[0]?.imageUrl" class="hero-image border-radius">
+    <span class="hero-text p-4">
+        <nc-pill 
+            [style]="{
+                backgroundColor: 'var(--nc-black-700)', 
+                color: 'var(--nc-white-800)',
+                opacity: '0.75',
+                letterSpacing: '0.1rem',
+            }"
+        >
+            {{ sight()!.categoryName }}
+        </nc-pill>
+        <h1 class="page-title sight-title text-left mb-4" >{{ sight()!.title }}</h1>
+        <span class="meta-wrap flex gap-4 mb-12">
+            <p class="text flex align-center mb-2">
+                <nc-flag-icon [size]="26" class="mr-1" />
+                {{ sight()!.country }}
+            </p>
+            <p class="text flex align-center mb-2">
+                <nc-area-icon [size]="26" class="mr-1" />
+                {{ sight()!.county }}
+            </p>
+            <p class="text flex align-center mb-2">
+                <nc-gps-icon [size]="30" class="mr-1" />
+                {{ sight()!.latitude }}, {{ sight()!.longitude }}
+            </p>
+        </span>
+        <span class="tags-wrap flex gap-2 flex-wrap w-100">
+            @for (tag of sight()!.tags; track tag.id) {
+                <nc-pill>{{ tag.name }}</nc-pill>
+            }
+        </span>
+    </span>
+  </nc-card>
 
   <!-- description -->
   <div class="mb-12">
-        <div class="section-header-accent mb-4">
-            <span class="section-accent-bar"></span>
-            <h3 class="section-title-light">Description</h3>
-        </div>
+
         <div class="description-card">
             <p class="text">{{ sight()!.description }}</p>
         </div>
@@ -56,7 +53,7 @@
   <div class="sight-facts-wrap mb-12">
     <div class="section-header-accent mb-6">
         <span class="section-accent-bar"></span>
-        <h3 class="section-title-light">Sight Facts</h3>
+        <h3 class="section-title">Sight Facts</h3>
     </div>
 
     @if (factsLoading()) {
@@ -73,30 +70,36 @@
     } @else if (factsJob() && factsJob()!.status === 'Succeeded' && factsJob()!.result) {
       <app-sight-fact-content [content]="factsJob()!.result!" class="mb-6" />
 
-      @if (!isEditingFacts()) {
-        <div class="flex gap-3 flex-wrap">
-          <nc-button [onClick]="onSaveFacts" [disabled]="factsActionLoading()">Save</nc-button>
-          <nc-button variant="outline" [onClick]="onStartEdit" [disabled]="factsActionLoading()">Edit</nc-button>
-        </div>
-      } @else {
-        <div class="sight-facts-edit">
-          <textarea
-            [ngModel]="feedbackText()"
-            (ngModelChange)="feedbackText.set($event)"
-            placeholder="Write what's wrong and how it should be improved"
-          ></textarea>
-          <div class="flex gap-3 flex-wrap mt-3">
-            <nc-button [onClick]="onSubmitEdit" [disabled]="factsActionLoading()">Submit</nc-button>
-            <nc-button variant="outline" [onClick]="onCancelEdit" [disabled]="factsActionLoading()">Cancel</nc-button>
+      @if (isAdmin()) {
+        @if (!isEditingFacts()) {
+          <div class="flex gap-3 flex-wrap">
+            <nc-button [onClick]="onSaveFacts" [disabled]="factsActionLoading()">Save</nc-button>
+            <nc-button variant="outline" [onClick]="onStartEdit" [disabled]="factsActionLoading()">Edit</nc-button>
+            <nc-button variant="outline" [onClick]="onDiscardDraft" [disabled]="factsActionLoading()">Discard</nc-button>
           </div>
-        </div>
+        } @else {
+          <div class="sight-facts-edit">
+            <textarea
+              [ngModel]="feedbackText()"
+              (ngModelChange)="feedbackText.set($event)"
+              placeholder="Write what's wrong and how it should be improved"
+            ></textarea>
+            <div class="flex gap-3 flex-wrap mt-3">
+              <nc-button [onClick]="onSubmitEdit" [disabled]="factsActionLoading()">Submit</nc-button>
+              <nc-button variant="outline" [onClick]="onCancelEdit" [disabled]="factsActionLoading()">Cancel</nc-button>
+            </div>
+          </div>
+        }
       }
     } @else if (factsJob() && factsJob()!.status === 'Failed') {
       <div class="facts-state-box facts-state-box-error">
         <nc-warning-icon [size]="32" class="facts-state-icon" />
         <p class="section-subtitle-light mt-3">{{ factsJob()!.errorMessage || 'Something went wrong generating facts.' }}</p>
         @if (isAdmin()) {
-          <nc-button class="mt-4" [onClick]="onGetFacts" [disabled]="factsActionLoading()">Try again</nc-button>
+          <div class="flex gap-3 flex-wrap justify-center mt-4">
+            <nc-button [onClick]="onGetFacts" [disabled]="factsActionLoading()">Try again</nc-button>
+            <nc-button variant="outline" [onClick]="onDiscardDraft" [disabled]="factsActionLoading()">Discard</nc-button>
+          </div>
         }
       </div>
     } @else if (facts()) {
@@ -104,7 +107,10 @@
 
       @if (isAdmin()) {
         @if (!isEditingFacts()) {
-          <nc-button variant="outline" [onClick]="onStartEdit" [disabled]="factsActionLoading()">Edit</nc-button>
+          <div class="flex gap-3 flex-wrap">
+            <nc-button variant="outline" [onClick]="onStartEdit" [disabled]="factsActionLoading()">Edit</nc-button>
+            <nc-button variant="outline" [onClick]="onDeleteFacts" [disabled]="factsActionLoading()">Delete Facts</nc-button>
+          </div>
         } @else {
           <div class="sight-facts-edit">
             <textarea

@@ -1,77 +1,57 @@
-.sight-hero {
-    display: flex;
-    align-items: stretch;
-    gap: 1.5rem;
+::ng-deep .hero-card {
+        position: relative;
+        overflow: hidden;
 }
 
-.sight-hero-image-wrap {
-    flex-shrink: 0;
-    width: 340px;
-}
-
-.sight-hero-image {
-    width: 100%;
-    aspect-ratio: 1 / 1;
+.hero-image {
+    width: 350px;
     object-fit: cover;
-    display: block;
-    border-radius: var(--nc-border-radius);
-    box-shadow: var(--nc-box-shadow-strong);
+    flex-shrink: 0;
+    border-radius: 5px 0 0 5px;
 }
 
-.sight-hero-info {
-    flex: 1;
+.hero-text {
     min-width: 0;
-    display: flex;
-    align-items: center;
-    border-radius: var(--nc-border-radius);
-    border: 1px solid var(--nc-border-color);
-    border-left: 4px solid var(--nc-black-600);
-    background-color: var(--nc-card-bg);
-    box-shadow: var(--nc-box-shadow);
+    flex: 1;
 }
 
-.sight-hero-info-inner {
-    width: 100%;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+@media (max-width: 900px) {
+    .hero-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0.15;
+        pointer-events: none;
+    }
 }
 
-.sight-hero-title {
-    margin: 0;
+@media (max-width: 525px) {
+    .hero-image {
+        height: 100%;
+    }
 }
 
-.sight-category-badge {
-    display: inline-block;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--nc-white-900);
-    background-color: var(--nc-black-600);
-    padding: 0.3rem 0.9rem;
-    border-radius: 9999px;
+.sight-title {
+    font-size: 5rem;
+    letter-spacing: 0.3rem;
+    font-family: 'Luckiest guy', sans-serif;
+    opacity: 0.75;
+    line-height: 1;
+    overflow-wrap: break-word;
 }
 
-.sight-meta-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
+@media (max-width: 900px) {
+    .meta-wrap {
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-left: 1rem;
+        margin-top: 3rem;
+    }
 }
 
-.meta-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.9rem;
-    border-radius: 9999px;
-    background-color: var(--nc-card-bg);
-    border: 1px solid var(--nc-border-color);
-    font-size: 0.9rem;
-    color: var(--nc-text-color-light);
-}
+
+
 
 .description-card {
     border-radius: var(--nc-border-radius);
@@ -81,38 +61,7 @@
     padding: 1.5rem;
 }
 
-@media (max-width: 900px) {
-    .sight-hero {
-        flex-direction: column;
-        align-items: center;
-    }
 
-    .sight-hero-image-wrap {
-        width: 100%;
-        max-width: 340px;
-    }
-
-    .sight-hero-info {
-        width: 100%;
-    }
-
-    .sight-hero-info-inner {
-        align-items: center;
-        text-align: center;
-    }
-
-    .sight-hero-title {
-        text-align: center;
-    }
-
-    .sight-meta-chips {
-        justify-content: center;
-    }
-
-    .tags {
-        justify-content: center;
-    }
-}
 
 .sight-facts-edit textarea {
     width: 100%;

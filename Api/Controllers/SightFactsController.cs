@@ -49,4 +49,20 @@ public class SightFactsController(ISightFactService sightFactService) : BaseAppC
     {
         return await sightFactService.SaveFromJobAsync(sightId, jobId);
     }
+
+    [Authorize(Roles = Roles.AdminOrOwner)]
+    [HttpDelete("~/api/v1/sights/{sightId:guid}/fact-jobs/{jobId:guid}")]
+    public async Task<IActionResult> DiscardJob(Guid sightId, Guid jobId)
+    {
+        await sightFactService.DiscardJobAsync(sightId, jobId);
+        return NoContent();
+    }
+
+    [Authorize(Roles = Roles.AdminOrOwner)]
+    [HttpDelete("~/api/v1/sights/{sightId:guid}/facts")]
+    public async Task<IActionResult> DeleteFacts(Guid sightId)
+    {
+        await sightFactService.DeleteFactsAsync(sightId);
+        return NoContent();
+    }
 }

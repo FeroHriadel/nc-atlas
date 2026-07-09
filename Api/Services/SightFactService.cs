@@ -136,6 +136,32 @@ public class SightFactService(AppDbContext db, Channel<SightFactGenerationReques
         return Deserialize(job.Result)!;
     }
 
+    public async Task DiscardJobAsync(Guid sightId, Guid jobId)
+    {
+        var job = await FindJobAsync(sightId, jobId);
+
+        if (job.SavedAt.HasValue)
+            throw new ErrorRes("This job has already been saved and cannot be discarded", StatusCodes.Status400BadRequest);
+
+        var isReferenced = await db.SightFactJobs.AnyAsync(j => j.PreviousJobId == jobId)
+            || await db.SightFacts.AnyAsync(f => f.SourceJobId == jobId);
+
+        if (isReferenced)
+            throw new ErrorRes("This job is referenced by a later revision and cannot be discarded", StatusCodes.Status409Conflict);
+
+        db.SightFactJobs.Remove(job);
+        await db.SaveChangesAsync();
+    }
+
+    public async Task DeleteFactsAsync(Guid sightId)
+    {
+        var existing = await db.SightFacts.FirstOrDefaultAsync(f => f.SightId == sightId)
+            ?? throw new ErrorRes("No sight facts found for this sight", StatusCodes.Status404NotFound);
+
+        db.SightFacts.Remove(existing);
+        await db.SaveChangesAsync();
+    }
+
     private async Task<SightFactJob> FindJobAsync(Guid sightId, Guid jobId)
     {
         return await db.SightFactJobs.FirstOrDefaultAsync(j => j.Id == jobId && j.SightId == sightId)

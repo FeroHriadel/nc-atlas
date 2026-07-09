@@ -1,1 +1,12 @@
 @import './app/ncss/stylesheets/ncss.css';
+
+@font-face {
+    font-family: 'Luckiest Guy';
+    src: url('/LuckiestGuy-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+.luckiest-guy {
+    font-family: 'Luckiest Guy', cursive;
+}

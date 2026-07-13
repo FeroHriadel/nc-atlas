@@ -63,6 +63,8 @@ public static class AppServiceExtensions
 
         services.AddScoped<ITripService, TripService>();
         services.AddScoped<ITripItineraryService, TripItineraryService>();
+        services.AddScoped<IGalleryImageService, GalleryImageService>();
+        services.AddSingleton<IImageProcessingService, ImageProcessingService>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApi(configuration.GetSection("AzureAd"));

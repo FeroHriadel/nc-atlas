@@ -1,0 +1,60 @@
+<nc-card class="gallery-wrap p-4 mb-12">
+    <div class="section-header-accent mb-6">
+        <span class="section-accent-bar"></span>
+        <h3 class="section-title">Gallery</h3>
+    </div>
+
+    @if (authService.isAdmin()) {
+        <div class="gallery-upload flex gap-3 flex-wrap align-center mb-6">
+            <nc-file-upload
+                #fileUpload
+                accept="image/*"
+                placeholder="Choose an image..."
+                [onChange]="onFileChange"
+            ></nc-file-upload>
+            <input
+                type="text"
+                placeholder="Short comment (required)"
+                class="gallery-comment-input"
+                [(ngModel)]="comment"
+            />
+            <nc-button [onClick]="onUpload" [disabled]="uploading()">Upload</nc-button>
+        </div>
+    }
+
+    @if (loading()) {
+        <p class="section-subtitle-light">Loading...</p>
+    } @else if (images().length === 0) {
+        <p class="section-subtitle-light">No images yet.</p>
+    } @else {
+        <div class="gallery-grid">
+            @for (image of images(); track image.id) {
+                <app-gallery-card
+                    [image]="image"
+                    [showDelete]="authService.isAdmin()"
+                    (imageClick)="onImageClick($event)"
+                    (deleteClick)="onDeleteClick($event)"
+                />
+            }
+        </div>
+    }
+</nc-card>
+
+<nc-modal #lightboxModal [actionButtons]="false" width="min(90vw, 900px)" [onClose]="onLightboxClose">
+    <div slot="modal-content" class="lightbox-content">
+        @if (lightboxImage(); as image) {
+            <img [src]="image.imageUrl" [alt]="image.comment" class="lightbox-image" />
+            <p class="text lightbox-comment">{{ image.comment }}</p>
+            <p class="text-light lightbox-meta">by {{ image.uploadedByUsername }}</p>
+
+            @if (images().length > 1) {
+                <nc-square-button class="lightbox-arrow lightbox-arrow-prev" (click)="onPrevImage()" ariaLabel="Previous image">
+                    <nc-arrow-right-icon [size]="20" [style]="{transform: 'rotate(180deg)'}"></nc-arrow-right-icon>
+                </nc-square-button>
+                <nc-square-button class="lightbox-arrow lightbox-arrow-next" (click)="onNextImage()" ariaLabel="Next image">
+                    <nc-arrow-right-icon [size]="20"></nc-arrow-right-icon>
+                </nc-square-button>
+            }
+        }
+    </div>
+</nc-modal>

@@ -1,0 +1,17 @@
+<nc-card class="gallery-card">
+    <img
+        [src]="image().thumbnailUrl"
+        [alt]="image().comment"
+        class="gallery-card-image"
+        (click)="onImageClick()"
+    />
+    @if (showDelete()) {
+        <nc-square-button size="small" class="gallery-card-delete" (click)="onDeleteClick()" ariaLabel="Delete image">
+            <nc-delete-icon [size]="18"></nc-delete-icon>
+        </nc-square-button>
+    }
+    <div class="gallery-card-body">
+        <p class="text gallery-card-comment">{{ image().comment }}</p>
+        <p class="text-light gallery-card-meta">by {{ image().uploadedByUsername }}</p>
+    </div>
+</nc-card>

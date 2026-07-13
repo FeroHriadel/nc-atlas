@@ -12,6 +12,10 @@ export class GalleryImageService {
     return this.http.get<GalleryImage[]>(`${environment.apiUrl}/sights/${sightId}/gallery`);
   }
 
+  getLatestGalleryImages(count = 6): Observable<GalleryImage[]> {
+    return this.http.get<GalleryImage[]>(`${environment.apiUrl}/gallery/latest`, { params: { count } });
+  }
+
   uploadImage(sightId: string, file: File, comment: string): Observable<GalleryImage> {
     const formData = new FormData();
     formData.append('file', file);

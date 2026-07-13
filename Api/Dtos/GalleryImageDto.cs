@@ -14,8 +14,11 @@ public class GalleryImageDto
     public required string Comment { get; set; }
     public required string UploadedByUsername { get; set; }
     public DateTime CreatedAt { get; set; }
+    public Guid SightId { get; set; }
+    public required string SightTitle { get; set; }
 
-    // Caller must .Include(g => g.UploadedByUser) — UploadedByUsername reads that navigation.
+    // Caller must .Include(g => g.UploadedByUser) and .Include(g => g.Sight) —
+    // UploadedByUsername/SightTitle read those navigations.
     public static GalleryImageDto FromEntity(GalleryImage image) => new()
     {
         Id = image.Id,
@@ -23,6 +26,8 @@ public class GalleryImageDto
         ThumbnailUrl = image.ThumbnailUrl,
         Comment = image.Comment,
         UploadedByUsername = image.UploadedByUser.Username,
-        CreatedAt = image.CreatedAt
+        CreatedAt = image.CreatedAt,
+        SightId = image.SightId,
+        SightTitle = image.Sight.Title
     };
 }

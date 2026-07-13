@@ -5,4 +5,6 @@ export interface GalleryImage {
     comment: string;
     uploadedByUsername: string;
     createdAt: string;
+    sightId: string;
+    sightTitle: string;
 }

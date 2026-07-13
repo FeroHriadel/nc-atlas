@@ -20,6 +20,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<SightFactJob> SightFactJobs => Set<SightFactJob>();
     public DbSet<Trip> Trips => Set<Trip>();
     public DbSet<GalleryImage> GalleryImages => Set<GalleryImage>();
+    public DbSet<SightComment> SightComments => Set<SightComment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

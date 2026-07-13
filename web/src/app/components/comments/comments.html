@@ -1,0 +1,60 @@
+<nc-card class="comments-wrap p-4 mb-6">
+    <div class="section-header-accent mb-6">
+        <span class="section-accent-bar"></span>
+        <h3 class="section-title">Comments</h3>
+    </div>
+
+    @if (!authService.currentUser()) {
+        <div class="comments-login mb-6">
+            <p class="section-subtitle-light mb-3">Log in to leave a comment.</p>
+            <nc-button size="small" [onClick]="onLogin">Log In</nc-button>
+        </div>
+    } @else {
+        <div class="comments-form mb-6">
+            <textarea
+                [(ngModel)]="text"
+                [maxlength]="maxTextLength"
+                placeholder="Share your thoughts about this sight..."
+                class="comments-textarea"
+            ></textarea>
+            <div class="comments-form-footer flex justify-between align-center gap-3 flex-wrap">
+                <nc-file-upload
+                    #fileUpload
+                    accept="image/*"
+                    placeholder="Attach an image (optional)"
+                    [onChange]="onImageChange"
+                ></nc-file-upload>
+                <span class="comments-char-count text-light">{{ text.length }} / {{ maxTextLength }}</span>
+                <nc-button size="small" [onClick]="onSubmit" [disabled]="submitting()">Post Comment</nc-button>
+            </div>
+        </div>
+    }
+
+    @if (loading()) {
+        <p class="section-subtitle-light">Loading...</p>
+    } @else if (comments().length === 0) {
+        <p class="section-subtitle-light">No comments yet.</p>
+    } @else {
+        <div class="comments-list">
+            @for (comment of comments(); track comment.id) {
+                <div class="comment-card">
+                    <div class="comment-card-header flex justify-between align-center">
+                        <span class="comment-card-username">{{ comment.username }}</span>
+                        <div class="flex align-center gap-3">
+                            <span class="text-light comment-card-date">{{ comment.createdAt | date:'medium' }}</span>
+                            @if (authService.isAdmin()) {
+                                <nc-square-button size="small" (click)="onDelete(comment)" ariaLabel="Delete comment">
+                                    <nc-delete-icon [size]="16"></nc-delete-icon>
+                                </nc-square-button>
+                            }
+                        </div>
+                    </div>
+                    <p class="text comment-card-text">{{ comment.text }}</p>
+                    @if (comment.imageUrl) {
+                        <img [src]="comment.imageUrl" alt="Comment attachment" class="comment-card-image" />
+                    }
+                </div>
+            }
+        </div>
+    }
+</nc-card>

@@ -138,6 +138,8 @@
   </nc-card>
 
   <app-gallery [sightId]="sight()!.id" />
+
+  <app-comments [sightId]="sight()!.id" />
 } @else {
   <span class="text-center text">No sight details available.</span>
 }

@@ -21,7 +21,19 @@ public class GalleryImageService(AppDbContext db, IBlobService blobService, IIma
         return await db.GalleryImages
             .Where(g => g.SightId == sightId)
             .Include(g => g.UploadedByUser)
+            .Include(g => g.Sight)
             .OrderByDescending(g => g.CreatedAt)
+            .Select(g => GalleryImageDto.FromEntity(g))
+            .ToListAsync();
+    }
+
+    public async Task<List<GalleryImageDto>> GetLatestGalleryImagesAsync(int count)
+    {
+        return await db.GalleryImages
+            .Include(g => g.UploadedByUser)
+            .Include(g => g.Sight)
+            .OrderByDescending(g => g.CreatedAt)
+            .Take(count)
             .Select(g => GalleryImageDto.FromEntity(g))
             .ToListAsync();
     }

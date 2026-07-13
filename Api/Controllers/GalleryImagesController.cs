@@ -20,6 +20,13 @@ public class GalleryImagesController(IGalleryImageService galleryImageService, I
         return await galleryImageService.GetGalleryImagesAsync(sightId);
     }
 
+    [AllowAnonymous]
+    [HttpGet("~/api/v1/gallery/latest")]
+    public async Task<ActionResult<List<GalleryImageDto>>> GetLatestGalleryImages([FromQuery] int count = 6)
+    {
+        return await galleryImageService.GetLatestGalleryImagesAsync(count);
+    }
+
     [Authorize(Roles = Roles.AdminOrOwner)]
     [HttpPost("~/api/v1/sights/{sightId:guid}/gallery")]
     public async Task<ActionResult<GalleryImageDto>> UploadImage(Guid sightId, IFormFile file, [FromForm] string? comment)

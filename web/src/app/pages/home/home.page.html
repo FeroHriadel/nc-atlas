@@ -21,5 +21,18 @@
     </div>
 </section>
 
+<section class="comments-preview mb-12">
+    <nc-card class="mb-4"></nc-card>
+    <h2 class="section-title mb-6">Latest Comments</h2>
+    <div class="comments-preview-cards">
+        @for (comment of latestComments(); track comment.id) {
+            <nc-card class="comment-preview-card" (click)="onCommentClick(comment)">
+                <p class="comment-preview-quote">&ldquo;{{ comment.text }}&rdquo;</p>
+                <p class="text-light comment-preview-attribution">{{ comment.username }} &middot; {{ comment.sightTitle }}</p>
+            </nc-card>
+        }
+    </div>
+</section>
+
 
 

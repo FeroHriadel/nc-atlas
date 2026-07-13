@@ -12,6 +12,10 @@ export class SightCommentService {
     return this.http.get<SightComment[]>(`${environment.apiUrl}/sights/${sightId}/comments`);
   }
 
+  getLatestComments(count = 6): Observable<SightComment[]> {
+    return this.http.get<SightComment[]>(`${environment.apiUrl}/comments/latest`, { params: { count } });
+  }
+
   createComment(sightId: string, text: string, image?: File): Observable<SightComment> {
     const formData = new FormData();
     formData.append('text', text);

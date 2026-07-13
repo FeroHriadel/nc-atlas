@@ -8,6 +8,7 @@ namespace Api.Interfaces;
 public interface ISightCommentService
 {
     Task<List<SightCommentDto>> GetCommentsAsync(Guid sightId);
+    Task<List<SightCommentDto>> GetLatestCommentsAsync(int count);
     Task<SightCommentDto> CreateCommentAsync(Guid sightId, Guid userId, string text, IFormFile? image);
     Task DeleteCommentAsync(Guid sightId, Guid commentId);
 }

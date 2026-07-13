@@ -4,4 +4,6 @@ export interface SightComment {
     imageUrl: string | null;
     username: string;
     createdAt: string;
+    sightId: string;
+    sightTitle: string;
 }

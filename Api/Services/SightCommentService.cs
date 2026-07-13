@@ -20,7 +20,19 @@ public class SightCommentService(AppDbContext db, IBlobService blobService, IIma
         return await db.SightComments
             .Where(c => c.SightId == sightId)
             .Include(c => c.User)
+            .Include(c => c.Sight)
             .OrderByDescending(c => c.CreatedAt)
+            .Select(c => SightCommentDto.FromEntity(c))
+            .ToListAsync();
+    }
+
+    public async Task<List<SightCommentDto>> GetLatestCommentsAsync(int count)
+    {
+        return await db.SightComments
+            .Include(c => c.User)
+            .Include(c => c.Sight)
+            .OrderByDescending(c => c.CreatedAt)
+            .Take(count)
             .Select(c => SightCommentDto.FromEntity(c))
             .ToListAsync();
     }

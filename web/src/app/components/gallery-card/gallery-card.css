@@ -1,4 +1,12 @@
-.gallery-card {
+/*
+ * nc-card's host is `display: contents` (no box of its own) — its real, visible box is an
+ * inner div rendered inside Card's own template, under Card's style-encapsulation scope, not
+ * ours. A plain `.gallery-card { position: relative }` here only matches our (boxless) host,
+ * so it never actually becomes a positioning context — the absolutely-positioned delete
+ * button then anchors to some unrelated ancestor instead. ::ng-deep reaches past the scope
+ * boundary to the real inner div, mirroring the same fix already used for .hero-card.
+ */
+::ng-deep .gallery-card {
     position: relative;
     overflow: hidden;
     padding: 0;

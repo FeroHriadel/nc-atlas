@@ -21,6 +21,13 @@ public class SightCommentsController(ISightCommentService sightCommentService, I
         return await sightCommentService.GetCommentsAsync(sightId);
     }
 
+    [AllowAnonymous]
+    [HttpGet("~/api/v1/comments/latest")]
+    public async Task<ActionResult<List<SightCommentDto>>> GetLatestComments([FromQuery] int count = 6)
+    {
+        return await sightCommentService.GetLatestCommentsAsync(count);
+    }
+
     [HttpPost("~/api/v1/sights/{sightId:guid}/comments")]
     public async Task<ActionResult<SightCommentDto>> CreateComment(Guid sightId, [FromForm] string text, IFormFile? image)
     {

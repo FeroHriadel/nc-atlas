@@ -15,6 +15,8 @@ import { Card } from '../../ncss/cards/card/card.component';
 import { GalleryCard } from '../../components/gallery-card/gallery-card';
 import { GalleryImageService } from '../../state/sights/gallery-image.service';
 import { GalleryImage } from '../../state/sights/gallery-image.model';
+import { SightCommentService } from '../../state/sights/sight-comment.service';
+import { SightComment } from '../../state/sights/sight-comment.model';
 
 
 
@@ -31,6 +33,7 @@ export class HomePage implements OnInit {
   private store = inject(Store);
   private router = inject(Router);
   private galleryImageService = inject(GalleryImageService);
+  private sightCommentService = inject(SightCommentService);
 
   categories$ = this.store.select(categoryFeature.selectCategories);
   categoriesLoading$ = this.store.select(categoryFeature.selectLoading);
@@ -39,6 +42,7 @@ export class HomePage implements OnInit {
   latestSights$ = this.store.select(sightFeature.selectLatest);
 
   latestGalleryImages = signal<GalleryImage[]>([]);
+  latestComments = signal<SightComment[]>([]);
 
   ngOnInit(): void {
     this.store.dispatch(CategoryActions.load());
@@ -48,9 +52,17 @@ export class HomePage implements OnInit {
     this.galleryImageService.getLatestGalleryImages(6).subscribe({
       next: (images) => this.latestGalleryImages.set(images),
     });
+
+    this.sightCommentService.getLatestComments(6).subscribe({
+      next: (comments) => this.latestComments.set(comments),
+    });
   }
 
   onGalleryImageClick = (image: GalleryImage): void => {
     this.router.navigate(['/sights', image.sightId]);
+  };
+
+  onCommentClick = (comment: SightComment): void => {
+    this.router.navigate(['/sights', comment.sightId]);
   };
 }

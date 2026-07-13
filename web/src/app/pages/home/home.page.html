@@ -1,25 +1,12 @@
-<h1>Atlas</h1>
+<app-hero></app-hero>
+<app-about></app-about>
 
-<section>
-  <h2>Categories</h2>
-  @if (categoriesLoading$ | async) {
-    <p>Loading categories...</p>
-  }
-  <ul>
-    @for (category of categories$ | async; track category.id) {
-      <li>{{ category.name }}</li>
-    }
-  </ul>
+<section class="latest mb-12">
+    <h2 class="section-title text-center mb-6">LATEST SIGHTS</h2>
+    <div class="latest-cards flex gap-6 flex-wrap justify-center">
+        @for (sight of (latestSights$ | async) ?? []; track sight.id) {
+            <app-sight-card [sight]="sight" />
+        }
+    </div>
 </section>
 
-<section>
-  <h2>Tags</h2>
-  @if (tagsLoading$ | async) {
-    <p>Loading tags...</p>
-  }
-  <ul>
-    @for (tag of tags$ | async; track tag.id) {
-      <li>{{ tag.name }}</li>
-    }
-  </ul>
-</section>

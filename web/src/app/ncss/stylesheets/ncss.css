@@ -69,6 +69,17 @@
     --nc-red-200: rgb(240, 150, 150);
     --nc-red-100: rgb(255, 200, 200);
 
+    --nc-orange-950: rgb(80, 40, 4);
+    --nc-orange-900: rgb(100, 50, 6);
+    --nc-orange-800: rgb(120, 60, 8);
+    --nc-orange-700: rgb(140, 70, 10);
+    --nc-orange-600: rgb(160, 80, 12);
+    --nc-orange-500: rgb(180, 90, 14);
+    --nc-orange-400: rgb(200, 100, 50);
+    --nc-orange-300: rgb(220, 150, 100);
+    --nc-orange-200: rgb(240, 200, 150);
+    --nc-orange-100: rgb(255, 220, 200);
+
 
 
     /* Document bg */
@@ -575,6 +586,10 @@ select:focus {
 .gap-6 { gap: 1.75rem; }
 .gap-7 { gap: 2rem; }
 .gap-8 { gap: 2.5rem; }
+.gap-9 { gap: 2.75rem; }
+.gap-10 { gap: 3rem; }
+.gap-11 { gap: 3.25rem; }
+.gap-12 { gap: 3.5rem; }
 .flex-1 { flex: 1; }
 .flex-2 { flex: 2; }
 .flex-3 { flex: 3; }

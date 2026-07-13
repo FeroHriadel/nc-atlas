@@ -9,6 +9,9 @@ export interface SightState {
   totalCount: number | null;
   loading: boolean;
   error: string | null;
+  latest: Sight[];
+  latestLoading: boolean;
+  latestError: string | null;
 }
 
 const initialState: SightState = {
@@ -18,6 +21,9 @@ const initialState: SightState = {
   totalCount: null,
   loading: false,
   error: null,
+  latest: [],
+  latestLoading: false,
+  latestError: null,
 };
 
 export const sightFeature = createFeature({
@@ -34,6 +40,10 @@ export const sightFeature = createFeature({
       loading: false,
     })),
     on(SightActions.loadFailure, (state, { error }): SightState => ({ ...state, error, loading: false })),
+
+    on(SightActions.loadLatest, (state): SightState => ({ ...state, latestLoading: true, latestError: null })),
+    on(SightActions.loadLatestSuccess, (state, { sights }): SightState => ({ ...state, latest: sights, latestLoading: false })),
+    on(SightActions.loadLatestFailure, (state, { error }): SightState => ({ ...state, latestError: error, latestLoading: false })),
   ),
 });
 

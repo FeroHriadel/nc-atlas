@@ -24,6 +24,18 @@ export class SightEffects {
         ),
       ),
     );
+
+    loadLatest$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(SightActions.loadLatest),
+        switchMap(() =>
+          this.sightService.getLatestSights().pipe(
+            map((sights) => SightActions.loadLatestSuccess({ sights })),
+            catchError((error) => of(SightActions.loadLatestFailure({ error: extractError(error) }))),
+          ),
+        ),
+      ),
+    );
 }
 
 

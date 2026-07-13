@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, DestroyRef, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, ViewChild, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -57,10 +57,19 @@ export class TripPlannerPage implements OnInit {
   trips$ = this.store.select(tripFeature.selectTrips)
     .pipe(map(trips => trips?.map(trip => ({ title: trip.title, text: trip.note ?? '', data: trip }) as CardListItem)));
 
+  constructor() {
+    // authService.currentUser() resolves asynchronously (MSAL init + /users/me) on a cold
+    // page load, so it's often still null when ngOnInit runs — react to it instead of
+    // checking it once. effect() also runs an initial pass immediately, so this covers the
+    // already-logged-in case too.
+    effect(() => {
+      if (this.authService.currentUser()) {
+        this.store.dispatch(TripActions.load());
+      }
+    });
+  }
+
   ngOnInit(): void {
-    if (this.authService.currentUser()) {
-      this.store.dispatch(TripActions.load());
-    }
     this.tripsError$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     this.tripsLoading$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }

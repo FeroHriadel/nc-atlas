@@ -39,4 +39,5 @@ export { GpsIcon } from './gps.icon';
 export { FlagIcon } from './flag.icon';
 export { AreaIcon } from './area.icon';
 export { CarIcon } from './car.icon';
+export { ArrowRightIcon } from './arrow-right.icon';
 

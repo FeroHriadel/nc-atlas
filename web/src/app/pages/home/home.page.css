@@ -1,0 +1,17 @@
+/*
+ * .hero-wrap is `position: absolute` (out of document flow) and .about-wrap visually
+ * drops itself below Hero via `transform: translateY(600px)` — a transform that shifts
+ * paint but reserves no flow height. Without compensation, this section would start
+ * flowing from .about-wrap's *unshifted* position and render underneath both Hero and
+ * About. Matching About's own translateY amount as margin-top here reserves exactly the
+ * space that transform silently skipped.
+ */
+.latest {
+    margin-top: calc(600px + 5rem);
+}
+
+@media (max-width: 400px) {
+    .latest {
+        margin-top: calc(700px + 5rem);
+    }
+}

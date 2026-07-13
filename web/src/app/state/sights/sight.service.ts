@@ -3,6 +3,7 @@ import { Sight, SightFilters } from './sight.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs/internal/Observable';
+import { map } from 'rxjs';
 import { PagedResult } from '../users/user.model';
 
 
@@ -24,5 +25,9 @@ export class SightService {
 
     getSightById(id: string): Observable<Sight> {
         return this.http.get<Sight>(`${environment.apiUrl}/sights/${id}`);
+    }
+
+    getLatestSights(): Observable<Sight[]> {
+        return this.getSights(1, 3, { sortDirection: 'desc' }).pipe(map(result => result.items));
     }
 }

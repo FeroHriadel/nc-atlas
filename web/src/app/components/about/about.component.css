@@ -1,0 +1,18 @@
+.about-wrap {
+    transform: translateY(calc(600px));
+}
+
+@media (max-width: 400px) {
+    .about-wrap {
+        transform: translateY(calc(700px));
+    }
+}
+
+.about-card {
+    width: 260px;
+}
+
+.about-card-number {
+    color: var(--nc-orange-400);
+    font-size: 2rem;
+}

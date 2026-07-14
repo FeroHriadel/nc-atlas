@@ -100,3 +100,56 @@ From then on you can manage everyone else's roles from `/admin/users` instead of
 
 
 # DEPLOY TO PRODUCTION
+Prod is Api serving the built Angular app on `/` from a single Docker image, running on Azure Container Apps (scale-to-zero), with Azure SQL (`Basic` tier) and Blob Storage. GitHub Actions rebuilds and redeploys on every push to `main` — Terraform is only needed for infra changes, not for routine deploys.
+
+### 1. First-time infra deploy
+Prerequisites: same as dev ([Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) + Terraform `>= 1.9`, `az login`), plus the `Microsoft.App` resource provider registered on the subscription (one-time): `az provider register --namespace Microsoft.App --wait`.
+
+```bash
+cd infra/envs/prod
+cp terraform.tfvars.example terraform.tfvars   # fill in claude_api_key; leave prod_azuread_client_secret as-is for now
+terraform init
+terraform plan
+terraform apply
+```
+
+This provisions, into resource group `rg-ncatlas-prod`:
+- **SQL Database** (`module.sql_database`, `westeurope`) — Basic tier (~$5/mo), firewall open to "Azure services" only.
+- **Blob Storage** + **Entra ID app registrations** (`module.image_storage`, `module.aad_auth`, `westeurope`) — same shape as dev, prod redirect URI/CORS origin.
+- **Container App** (`module.container_app`) — Consumption plan, `min_replicas = 0`, `/healthz` liveness/readiness probes, starts out running a placeholder image until the first GitHub Actions deploy.
+- **GitHub OIDC deploy identity** (`module.github_oidc`) — dedicated app registration + federated credential, no stored Azure secrets in GitHub.
+
+> **Region note:** `westeurope` occasionally runs out of Container Apps (AKS-backed) capacity. If `terraform apply` fails on `azurerm_container_app_environment.main` with `ManagedEnvironmentCapacityHeavyUsageError`, change `location` for just the `container_app` module in `infra/envs/prod/main.tf` to another EU region (we're currently on `swedencentral`) and re-apply — SQL/Storage/the resource group can stay in `westeurope`, Azure resources are located per-resource, not per-resource-group.
+
+### 2. Manual one-time steps (after the first apply)
+```bash
+terraform output                              # human-readable
+terraform output -raw sql_connection_string   # sensitive
+```
+
+1. **AAD client secret** — not Terraform-managed (same as dev): `az ad app credential reset --id <aad_api_client_id>`, then set `prod_azuread_client_secret` in `terraform.tfvars` and re-apply so the Container App picks it up.
+2. **Frontend MSAL config** — fill in `web/src/environments/environment.prod.ts`'s `msal` block: `clientId` ← `aad_spa_client_id`, `tenantId` ← `aad_tenant_id`, `apiScope` ← `aad_api_scope`. Commit it — the Docker build bundles whatever's committed.
+3. **GitHub repo secrets** (Settings → Secrets and variables → Actions) — used by `.github/workflows/deploy.yml` to log into Azure via OIDC:
+
+   | Secret | Value |
+   |---|---|
+   | `AZURE_CLIENT_ID` | `terraform output github_oidc_client_id` |
+   | `AZURE_TENANT_ID` | `terraform output github_oidc_tenant_id` |
+   | `AZURE_SUBSCRIPTION_ID` | `az account show --query id -o tsv` |
+
+4. **GHCR package visibility** — usually already public automatically (inherited from the public repo), but worth a check after the first run at `github.com/FeroHriadel/nc-atlas/pkgs/container/nc-atlas`. If it's private, the Container App will fail to pull (no registry credentials are configured, by design).
+
+### 3. Ongoing deploys
+Just `git push` to `main`. The workflow builds the root `Dockerfile` (bundles the Angular build into the API's `wwwroot`), pushes to `ghcr.io/ferohriadel/nc-atlas`, then runs `az containerapp update` with the new image tag. Database migrations run automatically on container startup (`Program.cs`, Production-only) — no separate migration step, and no need to open the SQL firewall to CI.
+
+### 4. Connecting to the prod database directly
+The SQL firewall only allows Azure-internal traffic by default. To connect from your own machine (e.g. Azure Data Studio, to promote yourself to `Owner` the same way as in dev — see above):
+
+```bash
+az sql server firewall-rule create \
+  --resource-group rg-ncatlas-prod --server ncatlas-prod-sql \
+  --name "AllowMyIP-$(date +%Y%m%d)" \
+  --start-ip-address <your public IP> --end-ip-address <your public IP>
+```
+
+Remove it again with `az sql server firewall-rule delete` once you're done, if you'd rather not leave it open.

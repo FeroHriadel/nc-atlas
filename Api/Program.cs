@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 // app builder
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddAppServices(builder.Configuration);
+builder.Services.AddAppServices(builder.Configuration, builder.Environment);
 var app = builder.Build();
 
 // migrations run on startup only in Production, so CI never needs the SQL

@@ -14,3 +14,8 @@ output "fqdn" {
 output "predicted_fqdn" {
   value = "${local.app_name}.${azurerm_container_app_environment.main.default_domain}"
 }
+
+output "identity_principal_id" {
+  description = "Object ID of the container app's system-assigned managed identity"
+  value       = azurerm_container_app.main.identity[0].principal_id
+}

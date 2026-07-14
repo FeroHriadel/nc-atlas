@@ -40,10 +40,15 @@ module "container_app" {
 module "image_storage" {
   source = "../../modules/blob-storage"
 
-  name_prefix          = "ncatlas-prod"
-  location             = azurerm_resource_group.main.location
-  resource_group_name  = azurerm_resource_group.main.name
-  cors_allowed_origins = ["https://${module.container_app.predicted_fqdn}"]
+  name_prefix         = "ncatlas-prod"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  # atlas.nclabs.eu added alongside the default *.azurecontainerapps.io
+  # domain (not replacing it) — both stay reachable. The custom-domain
+  # binding + managed cert itself is applied via `az containerapp hostname
+  # bind` outside Terraform (see README) due to open azurerm provider bugs
+  # around managed-certificate creation for Container Apps.
+  cors_allowed_origins = ["https://${module.container_app.predicted_fqdn}", "https://atlas.nclabs.eu"]
 }
 
 # spa_redirect_uris uses container_app.predicted_fqdn for the same
@@ -53,7 +58,7 @@ module "aad_auth" {
   source = "../../modules/aad-auth"
 
   name_prefix       = "ncatlas-prod"
-  spa_redirect_uris = ["https://${module.container_app.predicted_fqdn}/"]
+  spa_redirect_uris = ["https://${module.container_app.predicted_fqdn}/", "https://atlas.nclabs.eu/"]
 }
 
 module "github_oidc" {

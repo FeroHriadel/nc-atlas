@@ -7,6 +7,7 @@ using Api.Interfaces;
 using Api.Middleware;
 using Api.Services;
 using Api.Workers;
+using Azure.Core;
 using Azure.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,7 +25,7 @@ namespace Api.Extensions;
 
 public static class AppServiceExtensions
 {
-    public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
         // respond with camelCase json instead of PascalCase
         services.AddControllers()
@@ -40,10 +41,15 @@ public static class AppServiceExtensions
                 configuration.GetConnectionString("Default"),
                 sql => sql.UseNetTopologySuite()));
 
-        var credential = new ClientSecretCredential(
-            configuration["AzureAd:TenantId"],
-            configuration["AzureAd:ClientId"],
-            configuration["AzureAd:ClientSecret"]);
+        // Production uses the Container App's system-assigned managed identity —
+        // no client secret to expire/rotate. Local dev has no managed identity
+        // to fall back on, so it still uses the app registration's client secret.
+        TokenCredential credential = environment.IsProduction()
+            ? new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned)
+            : new ClientSecretCredential(
+                configuration["AzureAd:TenantId"],
+                configuration["AzureAd:ClientId"],
+                configuration["AzureAd:ClientSecret"]);
         services.AddSingleton(new GraphServiceClient(credential));
         services.AddScoped<IGraphService, GraphService>();
 

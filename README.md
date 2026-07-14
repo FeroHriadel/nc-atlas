@@ -142,7 +142,18 @@ terraform output -raw sql_connection_string   # sensitive
 ### 3. Ongoing deploys
 Just `git push` to `main`. The workflow builds the root `Dockerfile` (bundles the Angular build into the API's `wwwroot`), pushes to `ghcr.io/ferohriadel/nc-atlas`, then runs `az containerapp update` with the new image tag. Database migrations run automatically on container startup (`Program.cs`, Production-only) — no separate migration step, and no need to open the SQL firewall to CI.
 
-### 4. Connecting to the prod database directly
+### 4. Custom domain (`atlas.nclabs.eu`)
+Live, pointing at the Container App. Two parts, applied differently:
+
+- **DNS (AWS Route 53, `nclabs.eu` hosted zone)** — a `CNAME` (`atlas.nclabs.eu` → `terraform output container_app_fqdn`) and a `TXT` record (`asuid.atlas.nclabs.eu` → the environment's domain verification ID, from `az containerapp env show --name ncatlas-prod-env --resource-group rg-ncatlas-prod --query properties.customDomainConfiguration.customDomainVerificationId`). Managed manually via `aws route53 change-resource-record-sets`, not Terraform (DNS lives in a different cloud account).
+- **Domain binding + managed TLS cert (Azure)** — **not** Terraform-managed. The `azurerm` provider has open bugs around managed-certificate creation for Container Apps custom domains, so this is applied directly via CLI instead:
+  ```bash
+  az containerapp hostname add --hostname atlas.nclabs.eu --name ncatlas-prod-api --resource-group rg-ncatlas-prod
+  az containerapp hostname bind --hostname atlas.nclabs.eu --name ncatlas-prod-api --resource-group rg-ncatlas-prod --environment ncatlas-prod-env --validation-method CNAME
+  ```
+  Re-run these two if the Container App or its environment is ever recreated. `web/src/environments/environment.prod.ts`'s `redirectUri: '/'` is relative, so MSAL works from either the custom domain or the default `*.azurecontainerapps.io` one without changes — both stay reachable (the AAD redirect URIs and Blob CORS origins list both, see `infra/envs/prod/main.tf`).
+
+### 5. Connecting to the prod database directly
 The SQL firewall only allows Azure-internal traffic by default. To connect from your own machine (e.g. Azure Data Studio, to promote yourself to `Owner` the same way as in dev — see above):
 
 ```bash
@@ -153,3 +164,8 @@ az sql server firewall-rule create \
 ```
 
 Remove it again with `az sql server firewall-rule delete` once you're done, if you'd rather not leave it open.
+
+### 6. Graph API access (admin create/delete user) — managed identity, not a client secret
+The `/admin/users` create/delete actions call Microsoft Graph as the app itself (`Api/Services/GraphService.cs`). In prod this uses the Container App's **system-assigned managed identity** (`infra/modules/container-app/main.tf`: `identity { type = "SystemAssigned" }` + an `azuread_app_role_assignment` granting it Graph's `User.ReadWrite.All` application role) instead of `AzureAd:ClientSecret` — Azure rotates that identity's underlying credential internally, so there's nothing to expire or renew here, unlike the AAD client secret below. `Api/Extensions/AppServiceExtensions.cs` picks the credential type based on environment: `ManagedIdentityCredential` when `IsProduction()`, `ClientSecretCredential` otherwise (local dev has no managed identity to use).
+
+`AzureAd:ClientSecret` is still used in prod for one thing: JWT bearer validation config (`AddMicrosoftIdentityWebApi`) reads the whole `AzureAd` section, though the secret itself isn't actually exercised by that path. It's kept for now as a fallback rather than removed outright.

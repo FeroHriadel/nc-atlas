@@ -27,6 +27,13 @@ resource "azurerm_container_app" "main" {
   resource_group_name          = var.resource_group_name
   revision_mode                = "Single"
 
+  # Lets the app call Microsoft Graph (creating/deleting Entra ID users from
+  # the admin UI) as itself, without a client secret to expire or rotate —
+  # Azure manages this identity's underlying credential entirely internally.
+  identity {
+    type = "SystemAssigned"
+  }
+
   template {
     min_replicas = 0
     max_replicas = 3
@@ -122,4 +129,19 @@ resource "azurerm_container_app" "main" {
   lifecycle {
     ignore_changes = [template[0].container[0].image]
   }
+}
+
+# Grants the container app's managed identity the same Graph capability the
+# unused AzureAd:ClientSecret path was meant to provide (creating/deleting
+# users from /admin/users) — application permission, admin-consented here at
+# apply time since it can't be consented interactively by an identity that
+# has no sign-in of its own.
+data "azuread_service_principal" "msgraph" {
+  client_id = "00000003-0000-0000-c000-000000000000"
+}
+
+resource "azuread_app_role_assignment" "graph_user_readwrite" {
+  app_role_id         = data.azuread_service_principal.msgraph.app_role_ids["User.ReadWrite.All"]
+  principal_object_id = azurerm_container_app.main.identity[0].principal_id
+  resource_object_id  = data.azuread_service_principal.msgraph.object_id
 }

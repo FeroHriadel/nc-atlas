@@ -8,7 +8,7 @@
     <form [id]="formId" (submit)="onSubmit($event)">
         <label class="mb-1">Profile Picture</label>
         <div class="profile-image mb-4 text"
-             [style.background-image]="displayImageUrl() ? 'url(' + displayImageUrl() + ')' : null">
+             [style.background-image]="displayImageUrl() ? 'url(&quot;' + displayImageUrl() + '&quot;)' : null">
             @if (!displayImageUrl()) {
                 <nc-user-icon [size]="200"></nc-user-icon>
             }

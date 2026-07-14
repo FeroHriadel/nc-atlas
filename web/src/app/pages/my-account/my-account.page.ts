@@ -1,7 +1,8 @@
 import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { firstValueFrom, filter, take } from 'rxjs';
+import { Actions, ofType } from '@ngrx/effects';
+import { firstValueFrom, take } from 'rxjs';
 import { UserActions } from '../../state/users/user.actions';
 import { userFeature } from '../../state/users/user.reducer';
 import { UserService } from '../../state/users/user.service';
@@ -25,6 +26,7 @@ import { ToastService } from '../../ncss/services/toast.service';
 
 export class MyAccountPage implements OnInit {
   private store = inject(Store);
+  private actions$ = inject(Actions);
   private formService = inject(FormService);
   private userService = inject(UserService);
   private toastService = inject(ToastService);
@@ -38,17 +40,21 @@ export class MyAccountPage implements OnInit {
   currentUser$ = this.store.select(userFeature.selectCurrentUser);
 
   ngOnInit() {
-    this.store.dispatch(UserActions.loadMe());
-    this.store.select(userFeature.selectCurrentUser).pipe(
-      filter(user => user !== null),
+    // Listen for the action rather than the (replaying) selector — the store may
+    // already hold a cached currentUser from a previous visit, which would fire
+    // this subscription synchronously before the view is rendered.
+    this.actions$.pipe(
+      ofType(UserActions.loadMeSuccess),
       take(1),
-    ).subscribe(user => {
+    ).subscribe(({ user }) => {
       this.formService.setFormValues(this.formId, {
         username: user.username || '',
         bio: user.bio || '',
       });
       this.displayImageUrl.set(user.profileImageUrl || '');
     });
+
+    this.store.dispatch(UserActions.loadMe());
   }
 
   async onSubmit(event: Event) {

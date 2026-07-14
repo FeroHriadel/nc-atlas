@@ -55,6 +55,15 @@ terraform output -raw image_storage_connection_string   # sensitive value
 
 Note: the SQL Server database itself isn't managed by Terraform — `ConnectionStrings:Default` in Api user-secrets points at a local/manually-provisioned SQL Server instance.
 
+**4. (One-time, tenant-wide — not per environment) Verify `nclabs.eu` as a custom domain in Entra ID**
+
+Entra ID only lets you set a user's `UserPrincipalName`/email on a domain the *tenant* has verified. Skip this and everyone created via `/admin/users` (`GraphService.CreateUserAsync`) gets stuck on the default `<tenant-id>.onmicrosoft.com` address instead of `@nclabs.eu`. Since dev and prod are app registrations in the same Entra ID tenant (same `tenantId` in both `environment.ts` files), this only needs to be done once, ever — not once per environment.
+
+1. Azure Portal → Entra ID → **Custom domain names** → **Add custom domain** → enter `nclabs.eu` → Add domain. Entra ID returns a TXT record for verification.
+2. **DNS (AWS Route 53, `nclabs.eu` hosted zone)** — add that TXT record (same hosted zone as the `atlas.nclabs.eu` app custom domain, see step 4 under DEPLOY TO PRODUCTION). Managed manually, not Terraform.
+3. Back in the Entra ID portal, click **Verify** once the TXT record has propagated.
+4. From then on, `nclabs.eu` is a usable domain for `UserPrincipalName` when creating users — no need to make it the tenant's *primary* domain, just verified.
+
 
 ### Set up and run backend
 **Set up user secrets** - you'll need to set up dotnet usersecrets like this:

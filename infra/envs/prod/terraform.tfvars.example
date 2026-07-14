@@ -1,0 +1,2 @@
+claude_api_key             = "sk-ant-..."
+prod_azuread_client_secret = "set-after-first-apply-via-az-ad-app-credential-reset"

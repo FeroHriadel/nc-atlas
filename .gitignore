@@ -3,6 +3,7 @@
 *.tfstate.*
 *.tfvars
 !*.tfvars.example
+tfplan.bin
 local.settings.json
 node_modules/
 .env
@@ -13,3 +14,4 @@ obj/
 *.user
 *.suo
 .vs/
+Api/wwwroot/

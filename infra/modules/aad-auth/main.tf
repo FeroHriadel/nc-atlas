@@ -31,7 +31,7 @@ resource "azuread_application" "api" {
 
 resource "azuread_application_identifier_uri" "api" {
   application_id = azuread_application.api.id
-  identifier_uri  = "api://${azuread_application.api.client_id}"
+  identifier_uri = "api://${azuread_application.api.client_id}"
 }
 
 resource "azuread_service_principal" "api" {
@@ -43,8 +43,8 @@ resource "azuread_service_principal" "api" {
 # testing only, not something a real client should rely on.
 resource "azuread_application_pre_authorized" "azure_cli" {
   application_id       = azuread_application.api.id
-  authorized_client_id  = "04b07795-8ddb-461a-bbee-02f9e1bf7b46"
-  permission_ids        = [random_uuid.api_scope_id.result]
+  authorized_client_id = "04b07795-8ddb-461a-bbee-02f9e1bf7b46"
+  permission_ids       = [random_uuid.api_scope_id.result]
 }
 
 resource "azuread_application" "spa" {

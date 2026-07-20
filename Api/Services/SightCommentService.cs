@@ -39,9 +39,8 @@ public class SightCommentService(AppDbContext db, IBlobService blobService, IIma
 
     public async Task<SightCommentDto> CreateCommentAsync(Guid sightId, Guid userId, string text, IFormFile? image)
     {
-        var sightExists = await db.Sights.AnyAsync(s => s.Id == sightId);
-        if (!sightExists)
-            throw new ErrorRes("Sight not found", StatusCodes.Status404NotFound);
+        var sight = await db.Sights.FindAsync(sightId)
+            ?? throw new ErrorRes("Sight not found", StatusCodes.Status404NotFound);
 
         var trimmedText = text?.Trim() ?? "";
         if (trimmedText.Length == 0)
@@ -74,6 +73,7 @@ public class SightCommentService(AppDbContext db, IBlobService blobService, IIma
         var comment = new SightComment
         {
             SightId = sightId,
+            Sight = sight,
             Text = trimmedText,
             ImageUrl = imageUrl,
             UserId = userId,

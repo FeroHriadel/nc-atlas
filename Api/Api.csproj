@@ -21,6 +21,12 @@
     <PackageReference Include="Microsoft.Graph" Version="6.2.0" />
     <PackageReference Include="Microsoft.Identity.Web" Version="4.11.0" />
     <PackageReference Include="SkiaSharp" Version="4.150.0" />
+    <!-- SkiaSharp alone only bundles native binaries for Windows/macOS. The runtime container
+         is the minimal mcr.microsoft.com/dotnet/aspnet:8.0 image with no fontconfig/etc.
+         installed, so NoDependencies (self-contained native binary, no system libs) is
+         required for Linux — image resizing never renders text, so its lack of font
+         support is irrelevant here. -->
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.150.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 

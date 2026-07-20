@@ -40,9 +40,8 @@ public class GalleryImageService(AppDbContext db, IBlobService blobService, IIma
 
     public async Task<GalleryImageDto> UploadImageAsync(Guid sightId, Guid userId, IFormFile file, string? comment)
     {
-        var sightExists = await db.Sights.AnyAsync(s => s.Id == sightId);
-        if (!sightExists)
-            throw new ErrorRes("Sight not found", StatusCodes.Status404NotFound);
+        var sight = await db.Sights.FindAsync(sightId)
+            ?? throw new ErrorRes("Sight not found", StatusCodes.Status404NotFound);
 
         if (string.IsNullOrWhiteSpace(comment))
             throw new ErrorRes("A comment is required", StatusCodes.Status400BadRequest);
@@ -80,6 +79,7 @@ public class GalleryImageService(AppDbContext db, IBlobService blobService, IIma
         var image = new GalleryImage
         {
             SightId = sightId,
+            Sight = sight,
             ImageUrl = imageUrl,
             ThumbnailUrl = thumbnailUrl,
             Comment = comment.Trim(),

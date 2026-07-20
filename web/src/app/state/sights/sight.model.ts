@@ -26,3 +26,17 @@ export interface Sight {
     tags: Tag[];
     images: SightImage[];
 }
+
+export interface SightRequest {
+    title: string;
+    description: string;
+    categoryId: number;
+    latitude: number;
+    longitude: number;
+    country?: string;
+    state?: string;
+    county?: string;
+    source: string;
+    tagIds: string[];
+    imageUrls: string[];
+}

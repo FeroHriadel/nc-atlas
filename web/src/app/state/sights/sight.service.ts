@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Sight, SightFilters } from './sight.model';
+import { Sight, SightFilters, SightRequest } from './sight.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs/internal/Observable';
@@ -29,5 +29,13 @@ export class SightService {
 
     getLatestSights(): Observable<Sight[]> {
         return this.getSights(1, 3, { sortDirection: 'desc' }).pipe(map(result => result.items));
+    }
+
+    updateSight(id: string, request: SightRequest): Observable<Sight> {
+        return this.http.put<Sight>(`${environment.apiUrl}/sights/${id}`, request);
+    }
+
+    deleteSight(id: string): Observable<void> {
+        return this.http.delete<void>(`${environment.apiUrl}/sights/${id}`);
     }
 }

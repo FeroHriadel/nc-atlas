@@ -6,7 +6,17 @@
 
   <!-- hero -->
   <nc-card class="hero-card flex gap-6 mb-6">
-    <app-add-to-trip-button [sightId]="sight()!.id" size="medium" class="hero-add-to-trip" />
+    <span class="hero-actions-wrap">
+        <app-add-to-trip-button [sightId]="sight()!.id" size="medium" />
+        @if (isAdmin()) {
+            <nc-square-button variant="ghost" size="medium" ariaLabel="Edit sight" [onClick]="onOpenEditModal">
+                <nc-edit-icon></nc-edit-icon>
+            </nc-square-button>
+            <nc-square-button variant="ghost" size="medium" ariaLabel="Delete sight" [onClick]="onDeleteSight">
+                <nc-delete-icon></nc-delete-icon>
+            </nc-square-button>
+        }
+    </span>
     <img [src]="sight()!.images[0]?.imageUrl" class="hero-image border-radius">
     <span class="hero-text p-4">
         <nc-pill 
@@ -140,6 +150,67 @@
   <app-gallery [sightId]="sight()!.id" />
 
   <app-comments [sightId]="sight()!.id" />
+
+  @if (isAdmin()) {
+    <nc-modal #editSightModal [onConfirm]="onSaveSight" [width]="'600px'">
+      <div slot="modal-content" class="sight-edit-form">
+        <h3 class="section-title text-center mb-6">Edit Sight</h3>
+
+        <label for="edit-title" class="mb-1">Title</label>
+        <input id="edit-title" type="text" class="w-100 mb-4" [(ngModel)]="editTitle">
+
+        <label for="edit-category" class="mb-1">Category</label>
+        <nc-select
+          #categorySelect
+          id="edit-category"
+          class="mb-4"
+          [options]="categoryOptions()"
+          [onChange]="onCategorySelectChange"
+        ></nc-select>
+
+        <label for="edit-description" class="mb-1">Description</label>
+        <textarea id="edit-description" rows="4" class="w-100 mb-4" [(ngModel)]="editDescription"></textarea>
+
+        <div class="fields-row mb-4">
+          <div>
+            <label for="edit-country" class="mb-1">Country</label>
+            <input id="edit-country" type="text" class="w-100" [(ngModel)]="editCountry">
+          </div>
+          <div>
+            <label for="edit-state" class="mb-1">State</label>
+            <input id="edit-state" type="text" class="w-100" [(ngModel)]="editState">
+          </div>
+          <div>
+            <label for="edit-county" class="mb-1">County</label>
+            <input id="edit-county" type="text" class="w-100" [(ngModel)]="editCounty">
+          </div>
+        </div>
+
+        <div class="fields-row mb-4">
+          <div>
+            <label for="edit-latitude" class="mb-1">Latitude</label>
+            <input id="edit-latitude" type="number" step="any" class="w-100" [(ngModel)]="editLatitude">
+          </div>
+          <div>
+            <label for="edit-longitude" class="mb-1">Longitude</label>
+            <input id="edit-longitude" type="number" step="any" class="w-100" [(ngModel)]="editLongitude">
+          </div>
+        </div>
+
+        <label for="edit-tags" class="mb-1">Tags</label>
+        <nc-select
+          #tagsSelect
+          id="edit-tags"
+          class="mb-4"
+          [multiple]="true"
+          [searchable]="true"
+          placeholder="Select tags"
+          [options]="tagOptions()"
+          [onChange]="onTagsSelectChange"
+        ></nc-select>
+      </div>
+    </nc-modal>
+  }
 } @else {
   <span class="text-center text">No sight details available.</span>
 }

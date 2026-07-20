@@ -3,11 +3,30 @@
         overflow: hidden;
 }
 
-.hero-add-to-trip {
+.hero-actions-wrap {
     position: absolute;
     top: 1rem;
     right: 1rem;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sight-edit-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.sight-edit-form .fields-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.sight-edit-form .fields-row > * {
+    flex: 1;
+    min-width: 0;
 }
 
 .hero-image {

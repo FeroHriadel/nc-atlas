@@ -157,7 +157,7 @@
         <h3 class="section-title text-center mb-6">Edit Sight</h3>
 
         <label for="edit-title" class="mb-1">Title</label>
-        <input id="edit-title" type="text" class="w-100 mb-4" [(ngModel)]="editTitle">
+        <input id="edit-title" type="text" maxlength="200" class="w-100 mb-4" [(ngModel)]="editTitle">
 
         <label for="edit-category" class="mb-1">Category</label>
         <nc-select
@@ -189,11 +189,11 @@
         <div class="fields-row mb-4">
           <div>
             <label for="edit-latitude" class="mb-1">Latitude</label>
-            <input id="edit-latitude" type="number" step="any" class="w-100" [(ngModel)]="editLatitude">
+            <input id="edit-latitude" type="number" step="any" min="-90" max="90" class="w-100" [(ngModel)]="editLatitude">
           </div>
           <div>
             <label for="edit-longitude" class="mb-1">Longitude</label>
-            <input id="edit-longitude" type="number" step="any" class="w-100" [(ngModel)]="editLongitude">
+            <input id="edit-longitude" type="number" step="any" min="-180" max="180" class="w-100" [(ngModel)]="editLongitude">
           </div>
         </div>
 

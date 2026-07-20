@@ -1,0 +1,76 @@
+<h1 class="page-title">Create Sight</h1>
+<h2 class="page-subtitle mb-12">Manually add a new Sight</h2>
+
+<nc-card [style]="{maxWidth: '700px'}" class="p-4 mb-6 mx-auto">
+    <form (submit)="onSubmit($event)">
+        <label for="title" class="mb-1">Title</label>
+        <input id="title" type="text" maxlength="200" placeholder="Sight title" class="w-100 mb-4" [(ngModel)]="title" name="title">
+
+        <label for="category" class="mb-1">Category</label>
+        <nc-select
+            id="category"
+            class="mb-4"
+            placeholder="Select a category"
+            [options]="categoryOptions()"
+            [onChange]="onCategoryChange"
+        ></nc-select>
+
+        <label for="description" class="mb-1">Description</label>
+        <textarea id="description" rows="4" class="w-100 mb-4" placeholder="Describe the sight..." [(ngModel)]="description" name="description"></textarea>
+
+        <div class="fields-row mb-4">
+            <div>
+                <label for="country" class="mb-1">Country</label>
+                <input id="country" type="text" class="w-100" [(ngModel)]="country" name="country">
+            </div>
+            <div>
+                <label for="state" class="mb-1">State</label>
+                <input id="state" type="text" class="w-100" [(ngModel)]="state" name="state">
+            </div>
+            <div>
+                <label for="county" class="mb-1">County</label>
+                <input id="county" type="text" class="w-100" [(ngModel)]="county" name="county">
+            </div>
+        </div>
+
+        <div class="fields-row mb-4">
+            <div>
+                <label for="latitude" class="mb-1">Latitude</label>
+                <input id="latitude" type="number" step="any" min="-90" max="90" placeholder="e.g. 49.1234" class="w-100" [(ngModel)]="latitude" name="latitude">
+            </div>
+            <div>
+                <label for="longitude" class="mb-1">Longitude</label>
+                <input id="longitude" type="number" step="any" min="-180" max="180" placeholder="e.g. 18.1234" class="w-100" [(ngModel)]="longitude" name="longitude">
+            </div>
+        </div>
+
+        <label for="tags" class="mb-1">Tags</label>
+        <nc-select
+            id="tags"
+            class="mb-4"
+            [multiple]="true"
+            [searchable]="true"
+            placeholder="Select tags"
+            [options]="tagOptions()"
+            [onChange]="onTagsChange"
+        ></nc-select>
+
+        <div class="fields-row mb-4">
+            <div>
+                <label class="mb-1">Image (350px thumbnail)</label>
+                <nc-file-upload id="image350" accept="image/*" [onChange]="onImage350Change"></nc-file-upload>
+            </div>
+            <div>
+                <label class="mb-1">Image (1024px full)</label>
+                <nc-file-upload id="image1024" accept="image/*" [onChange]="onImage1024Change"></nc-file-upload>
+            </div>
+        </div>
+
+        <label for="source" class="mb-1">Source</label>
+        <input id="source" type="text" maxlength="200" placeholder="Where this sight's data came from" class="w-100 mb-6" [(ngModel)]="source" name="source">
+
+        <nc-button type="submit" class="w-100" [disabled]="isSubmitting()">
+            {{ isSubmitting() ? 'Creating...' : 'Create Sight' }}
+        </nc-button>
+    </form>
+</nc-card>

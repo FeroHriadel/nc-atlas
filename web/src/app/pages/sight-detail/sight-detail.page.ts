@@ -285,6 +285,14 @@ export class SightDetailPage implements OnInit {
       this.toastService.error({ text: 'Please fill in title, description, category and a valid latitude/longitude.', duration: 4000 });
       return;
     }
+    if (title.length > 200) {
+      this.toastService.error({ text: 'Title must be 200 characters or fewer.', duration: 4000 });
+      return;
+    }
+    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      this.toastService.error({ text: 'Latitude must be between -90 and 90, longitude between -180 and 180.', duration: 4000 });
+      return;
+    }
 
     this.isSavingSight.set(true);
     this.sightService.updateSight(s.id, {

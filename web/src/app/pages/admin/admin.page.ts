@@ -37,6 +37,11 @@ export class AdminPage {
       subtitle: 'Browse, add, edit and delete Sights — the core content of the app. Assign categories and tags, upload images and manage location data.',
       route: '/admin/sights',
     },
+    {
+      title: 'Create Sight',
+      subtitle: 'Manually add a single new Sight — title, location, category, tags and both 350px/1024px images.',
+      route: '/admin/sight-create',
+    },
   ];
 
   navigate = (route: string) => () => this.router.navigate([route]);

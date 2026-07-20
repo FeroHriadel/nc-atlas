@@ -15,6 +15,7 @@ public class SightService(AppDbContext db, IBlobService blobService) : ISightSer
 {
     public async Task<SightDto> CreateSightAsync(SightRequestDto request)
     {
+        ValidateRequest(request);
         await EnsureCategoryExistsAsync(request.CategoryId);
         var tags = await FindTagsAsync(request.TagIds);
 
@@ -91,6 +92,7 @@ public class SightService(AppDbContext db, IBlobService blobService) : ISightSer
 
     public async Task<SightDto> UpdateSightAsync(Guid id, SightRequestDto request)
     {
+        ValidateRequest(request);
         var sight = await FindSightAsync(id);
         await EnsureCategoryExistsAsync(request.CategoryId);
         var tags = await FindTagsAsync(request.TagIds);
@@ -149,6 +151,37 @@ public class SightService(AppDbContext db, IBlobService blobService) : ISightSer
             .Include(s => s.Images)
             .FirstOrDefaultAsync(s => s.Id == id)
             ?? throw new ErrorRes("Sight not found", StatusCodes.Status404NotFound);
+    }
+
+    private static void ValidateRequest(SightRequestDto request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Title))
+            throw new ErrorRes("Title is required", StatusCodes.Status400BadRequest);
+        if (request.Title.Length > 200)
+            throw new ErrorRes("Title must be 200 characters or fewer", StatusCodes.Status400BadRequest);
+
+        if (string.IsNullOrWhiteSpace(request.Description))
+            throw new ErrorRes("Description is required", StatusCodes.Status400BadRequest);
+
+        if (string.IsNullOrWhiteSpace(request.Source))
+            throw new ErrorRes("Source is required", StatusCodes.Status400BadRequest);
+        if (request.Source.Length > 200)
+            throw new ErrorRes("Source must be 200 characters or fewer", StatusCodes.Status400BadRequest);
+
+        if (request.Latitude < -90 || request.Latitude > 90)
+            throw new ErrorRes("Latitude must be between -90 and 90", StatusCodes.Status400BadRequest);
+        if (request.Longitude < -180 || request.Longitude > 180)
+            throw new ErrorRes("Longitude must be between -180 and 180", StatusCodes.Status400BadRequest);
+
+        if (request.ImageUrls.Count != 2)
+            throw new ErrorRes("Both a 350px and a 1024px image are required", StatusCodes.Status400BadRequest);
+
+        if (request.Country?.Length > 100)
+            throw new ErrorRes("Country must be 100 characters or fewer", StatusCodes.Status400BadRequest);
+        if (request.State?.Length > 100)
+            throw new ErrorRes("State must be 100 characters or fewer", StatusCodes.Status400BadRequest);
+        if (request.County?.Length > 100)
+            throw new ErrorRes("County must be 100 characters or fewer", StatusCodes.Status400BadRequest);
     }
 
     private async Task EnsureCategoryExistsAsync(int categoryId)

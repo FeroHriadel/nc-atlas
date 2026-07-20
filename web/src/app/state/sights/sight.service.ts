@@ -31,6 +31,10 @@ export class SightService {
         return this.getSights(1, 3, { sortDirection: 'desc' }).pipe(map(result => result.items));
     }
 
+    createSight(request: SightRequest): Observable<Sight> {
+        return this.http.post<Sight>(`${environment.apiUrl}/sights`, request);
+    }
+
     updateSight(id: string, request: SightRequest): Observable<Sight> {
         return this.http.put<Sight>(`${environment.apiUrl}/sights/${id}`, request);
     }

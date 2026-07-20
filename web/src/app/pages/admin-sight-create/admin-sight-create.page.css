@@ -1,0 +1,9 @@
+.fields-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.fields-row > * {
+    flex: 1;
+    min-width: 0;
+}

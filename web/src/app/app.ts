@@ -47,6 +47,7 @@ export class App implements OnInit {
           { label: 'Admin Categories', value: '/admin/categories' },
           { label: 'Admin Tags', value: '/admin/tags' },
           { label: 'Admin Sights Upload', value: '/admin/sights' },
+          { label: 'Admin Sight Create', value: '/admin/sight-create' },
           { label: 'Admin Users', value: '/admin/users' },
         ],
       });
